@@ -7,6 +7,7 @@
 		"no-redeclare": "off",
 		"no-use-before-define": "off",
 		"@typescript-eslint/no-explicit-any": "off",
+		"react/display-name": "off",
 		"@typescript-eslint/no-unused-vars": [
       "error",
       {

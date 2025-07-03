@@ -11,7 +11,7 @@ import { envVars } from '@/infra/config/env'
 export async function SignInWithGoogle() {
   const googleSignInURL = new URL(
     `${serverRoutes.session}/google`,
-    envVars.NEXT_PUBLIC_API_URL,
+    envVars.NEXT_PUBLIC_BACKEND_URL,
   )
 
   redirect(googleSignInURL.toString())

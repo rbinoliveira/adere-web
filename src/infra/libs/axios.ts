@@ -19,7 +19,7 @@ export function setupAPIClient() {
   const accessToken = getCookie(appCookies.ACCESS_TOKEN)
 
   const axiosApi = axios.create({
-    baseURL: envVars.NEXT_PUBLIC_API_URL,
+    baseURL: envVars.NEXT_PUBLIC_BACKEND_URL,
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

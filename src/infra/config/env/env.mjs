@@ -3,15 +3,15 @@ import { z } from 'zod'
 const server = z.object({})
 
 const client = z.object({
-  NEXT_PUBLIC_API_URL: z.string().url(),
-  NEXT_PUBLIC_API_NAME: z.string().min(1),
-  NEXT_PUBLIC_APP_NAME: z.string().min(1),
+  NEXT_PUBLIC_BACKEND_URL: z.string().url(),
+  NEXT_PUBLIC_BACKEND_NAME: z.string().min(1),
+  NEXT_PUBLIC_FRONTEND_NAME: z.string().min(1),
 })
 
 const processEnv = {
-  NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-  NEXT_PUBLIC_API_NAME: process.env.NEXT_PUBLIC_API_NAME,
-  NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
+  NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
+  NEXT_PUBLIC_BACKEND_NAME: process.env.NEXT_PUBLIC_BACKEND_NAME,
+  NEXT_PUBLIC_FRONTEND_NAME: process.env.NEXT_PUBLIC_FRONTEND_NAME,
 }
 
 // Don't touch the part below

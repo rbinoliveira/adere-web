@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { UI } from '@/application/shared/components'
 
 export const metadata: Metadata = {
-  title: 'Create Next App',
+  title: 'Pill Reminder',
 }
 
 export default function DashboardLayout({
