@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-import { UI } from '@/core/_shared/components'
+import { UI } from '@/application/_shared/components'
 
 export const metadata: Metadata = {
   title: 'Pill Reminder',

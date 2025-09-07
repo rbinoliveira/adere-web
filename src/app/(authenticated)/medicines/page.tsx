@@ -2,8 +2,8 @@
 
 import { PlusCircleIcon } from '@phosphor-icons/react'
 
-import { UI } from '@/core/_shared/components'
-import { ListMedicineService } from '@/core/medicine/services/list-medicine.service'
+import { UI } from '@/application/_shared/components'
+import { ListMedicineService } from '@/application/medicine/services/list-medicine.service'
 
 export default function Medicines() {
   const { data } = ListMedicineService()

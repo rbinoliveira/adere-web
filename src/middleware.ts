@@ -1,6 +1,10 @@
-import { appCookies } from '@/core/_shared/constants/app-cookies.constant'
-import { appPublicRoutes, appRoutes } from '@/core/_shared/constants/app-routes.constant'
 import { type NextRequest, NextResponse } from 'next/server'
+
+import { appCookies } from '@/application/_shared/constants/app-cookies.constant'
+import {
+  appPublicRoutes,
+  appRoutes,
+} from '@/application/_shared/constants/app-routes.constant'
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -16,10 +20,9 @@ export function middleware(request: NextRequest) {
   const atualPath = request.nextUrl.pathname
   const isRoutePublic = appPublicRoutes.includes(atualPath)
 
-  const refreshToken = request.cookies.get(appCookies.REFRESH_TOKEN)?.value
-  const accessToken = request.cookies.get(appCookies.ACCESS_TOKEN)?.value
+  const userId = request.cookies.get(appCookies.USER_ID)?.value
 
-  const userIsAuthenticated = accessToken && refreshToken
+  const userIsAuthenticated = !!userId
 
   if (isRoutePublic && userIsAuthenticated) {
     return NextResponse.redirect(new URL(appRoutes.dashboard, request.url))
