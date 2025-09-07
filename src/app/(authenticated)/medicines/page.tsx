@@ -1,19 +1,36 @@
-import { Plus } from 'lucide-react'
+'use client'
 
-import { UI } from '@/application/shared/components'
+import { PlusCircleIcon } from '@phosphor-icons/react'
+
+import { UI } from '@/core/_shared/components'
+import { ListMedicineService } from '@/core/medicine/services/list-medicine.service'
 
 export default function Medicines() {
+  const { data } = ListMedicineService()
+
+  if (!data) return null
+
   return (
-    <div className="flex items-center justify-between">
-      <h1 className="text-[1.9375rem] font-bold leading-[1.19]">Medicines</h1>
-      <div className="flex items-center gap-6">
-        <UI.Button variant="secondary">View Etalage</UI.Button>
-        <UI.Button variant="secondary">Set at once</UI.Button>
+    <div className="flex flex-col gap-10">
+      <div className="flex items-center justify-between">
+        <h1 className="text-[1.9375rem] font-bold leading-[1.19]">
+          Medicamentos
+        </h1>
         <UI.Button>
-          Products
-          <Plus />
+          Adicionar
+          <PlusCircleIcon />
         </UI.Button>
       </div>
+      <UI.Table
+        columns={[
+          {
+            columnLabel: 'Ingrediente ativo',
+            columnName: 'activeIngredient',
+            render: (row) => row.activeIngredient,
+          },
+        ]}
+        data={data}
+      />
     </div>
   )
 }

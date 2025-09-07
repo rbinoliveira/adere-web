@@ -1,9 +1,9 @@
-import '@/application/shared/styles/globals.css'
+import '@/core/_shared/styles/globals.css'
 
 import type { Metadata } from 'next'
 import { Mulish } from 'next/font/google'
 
-import { RootProviders } from '@/application/shared/providers'
+import { RootProviders } from '@/core/_shared/providers/root.provider'
 
 const mulish = Mulish({
   weight: ['400', '500', '600', '700'],

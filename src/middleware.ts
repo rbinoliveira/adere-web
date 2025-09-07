@@ -1,10 +1,6 @@
+import { appCookies } from '@/core/_shared/constants/app-cookies.constant'
+import { appPublicRoutes, appRoutes } from '@/core/_shared/constants/app-routes.constant'
 import { type NextRequest, NextResponse } from 'next/server'
-
-import {
-  appCookies,
-  appPublicRoutes,
-  appRoutes,
-} from '@/application/shared/constants'
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
