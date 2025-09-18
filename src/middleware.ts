@@ -5,6 +5,7 @@ import {
   appPublicRoutes,
   appRoutes,
 } from '@/application/_shared/constants/app-routes.constant'
+import { userSchema } from '@/application/auth/schemas/user.schema'
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -20,17 +21,33 @@ export function middleware(request: NextRequest) {
   const atualPath = request.nextUrl.pathname
   const isRoutePublic = appPublicRoutes.includes(atualPath)
 
-  const userId = request.cookies.get(appCookies.USER_ID)?.value
+  const userCookie = request.cookies.get(appCookies.USER)?.value
 
-  const userIsAuthenticated = !!userId
+  const userIsAuthenticated = !!userCookie
 
-  if (isRoutePublic && userIsAuthenticated) {
-    return NextResponse.redirect(new URL(appRoutes.dashboard, request.url))
+  if (userIsAuthenticated) {
+    const user = JSON.parse(userCookie)
+    const profileCompleted = userSchema.safeParse(user).success
+
+    if (!profileCompleted && pathname !== appRoutes.completeProfile) {
+      return NextResponse.redirect(
+        new URL(appRoutes.completeProfile, request.url),
+      )
+    }
+
+    if (
+      isRoutePublic ||
+      (profileCompleted && pathname === appRoutes.completeProfile)
+    ) {
+      return NextResponse.redirect(new URL(appRoutes.dashboard, request.url))
+    }
+  } else {
+    if (!isRoutePublic) {
+      return NextResponse.redirect(new URL(appRoutes.signIn, request.url))
+    }
   }
 
-  if (!isRoutePublic && !userIsAuthenticated) {
-    return NextResponse.redirect(new URL(appRoutes.signIn, request.url))
-  }
+  return NextResponse.next()
 }
 
 export const config = {

@@ -68,7 +68,7 @@ function LoginInformationsCard({
       <div
         className={cn('w-12 rounded-lg h-12 flex items-center justify-center', {
           'bg-green-one': color === 'green',
-          'bg-blue-one': color === 'blue',
+          'bg-primary': color === 'blue',
           'bg-yellow-one': color === 'yellow',
         })}
       >

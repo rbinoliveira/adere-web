@@ -4,7 +4,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 
-import { UI } from '@/application/_shared/components'
+import { Button } from '@/application/_shared/components/atoms/button'
+import { Separator } from '@/application/_shared/components/atoms/separator'
+import { InputText } from '@/application/_shared/components/molecules/form/input-text'
+import { Image } from '@/application/_shared/components/molecules/image'
 import { useAuth } from '@/application/auth/hooks/auth.hook'
 import {
   RegisterSchema,
@@ -35,62 +38,66 @@ export function RegisterForm() {
           Informe seus dados para se cadastrar
         </p>
       </div>
-      <UI.Button variant="google" className="mt-2" onClick={signInWithGoogle}>
-        <UI.Image
+      <Button variant="google" className="mt-2" onClick={signInWithGoogle}>
+        <Image
           src={'/google.svg'}
           alt="Ícone do google"
           className="w-[24px] h-[24px]"
         />
         Cadastre-se com Google
-        <UI.Image
+        <Image
           src={'/arrow-right.svg'}
           alt="Ícone do google"
           className="w-[18px] h-[18px]"
         />
-      </UI.Button>
-      <UI.Separator label="ou cadastre-se com e-mail" />
-      <UI.InputText
+      </Button>
+      <Separator label="ou cadastre-se com e-mail" />
+      <InputText
         label="Nome"
         control={control}
         name="name"
         placeholder="Dr. Exemplo"
+        inputSize="lg"
       />
-      <UI.InputText
+      <InputText
         label="E-mail"
         control={control}
         name="email"
         placeholder="dr.exemplo@clinica.com"
+        inputSize="lg"
       />
       <div className="grid grid-cols-2 items-center gap-2">
-        <UI.InputText
+        <InputText
           label="Senha"
           control={control}
           name="password"
           placeholder="Digite sua senha"
+          inputSize="lg"
           type="password"
         />
-        <UI.InputText
+        <InputText
           label="Confirme a senha"
           control={control}
           name="confirmPassword"
           placeholder="Digite sua senha"
           type="password"
+          inputSize="lg"
         />
       </div>
-      <UI.Button variant="login" type="submit" className="mt-2">
-        <UI.Image
+      <Button variant="login" type="submit" className="mt-2">
+        <Image
           src={'/login.svg'}
           alt="Ícone de entrar"
           className="w-[16px] h-[16px]"
         />
         Cadastrar
-      </UI.Button>
+      </Button>
 
       <div className="inline-flex items-center self-center mt-2 gap-1">
         <span className="text-sm text-text-two">Já possui uma conta?</span>
-        <UI.Button variant="link" asChild>
+        <Button variant="link" asChild>
           <Link href="/">Acesse sua conta</Link>
-        </UI.Button>
+        </Button>
       </div>
     </form>
   )

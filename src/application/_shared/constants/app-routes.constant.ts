@@ -4,6 +4,7 @@ export const appRoutes = {
   auth: '/auth',
   register: '/registrar',
   recoverPassword: '/recuperar-senha',
+  completeProfile: '/completar-perfil',
 }
 
 export const appPublicRoutes = [

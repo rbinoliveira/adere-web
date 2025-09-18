@@ -11,7 +11,6 @@ import {
   updateProfile,
   User as FirebaseUser,
 } from 'firebase/auth'
-import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { usePathname, useRouter } from 'next/navigation'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -25,7 +24,11 @@ import { deleteAuthCookies } from '@/application/_shared/helpers/delete-auth-coo
 import { handleError } from '@/application/_shared/helpers/error.helper'
 import { generateRandomPassword } from '@/application/_shared/helpers/generate-password'
 import { getAuthCookies } from '@/application/_shared/helpers/get-auth-cookies.helper'
-import { auth, db, provider } from '@/application/_shared/libs/firebase'
+import { auth, provider } from '@/application/_shared/libs/firebase'
+import {
+  getDocument,
+  upsertDocument,
+} from '@/application/_shared/services/firebase.service'
 import { LoginSchema } from '@/application/auth/schemas/login.schema'
 import { RecoverPasswordSchema } from '@/application/auth/schemas/recover-password.schema'
 import { RegisterSchema } from '@/application/auth/schemas/register.schema'
@@ -35,7 +38,9 @@ export type User = {
   email: string
   name: string
   role: string
-  photo: string
+  photo?: string
+  cro?: string
+  phone?: string
 }
 
 type AuthContextType = {
@@ -125,35 +130,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function getOrCreateFirestoreUser(user: FirebaseUser): Promise<User> {
-    const userRef = doc(db, 'users', user.uid)
-    const userSnap = await getDoc(userRef)
+    const userDocument = await getDocument<User>('users', user.uid)
 
-    if (!userSnap.exists()) {
+    if (!userDocument) {
       const newUser: User = {
         id: user.uid,
-        email: user.email || '',
-        name: user.displayName || '',
+        email: user.email ?? '',
+        name: user.displayName ?? '',
         role: 'admin',
-        photo: user.photoURL || '',
+        photo: user.photoURL ?? undefined,
       }
 
-      await setDoc(userRef, {
-        ...newUser,
-        createdAt: serverTimestamp(),
-        uid: user.uid,
-      })
+      await upsertDocument<User>('users', user.uid, newUser)
 
       return newUser
     }
 
-    const data = userSnap.data()!
-
     return {
-      id: data.uid,
-      email: data.email,
-      name: data.name,
-      role: data.role,
-      photo: data.photo,
+      id: userDocument.id,
+      email: userDocument.email,
+      name: userDocument.name,
+      role: userDocument.role,
+      photo: userDocument.photo,
+      cro: userDocument.cro,
+      phone: userDocument.phone,
     }
   }
 

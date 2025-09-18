@@ -1,5 +1,5 @@
 import { LoginInformations } from '@/application/auth/components/login-informations'
-import { RecoverPasswordForm } from '@/application/auth/components/recover-password'
+import { RecoverPasswordForm } from '@/application/auth/components/recover-password-form'
 
 export function RecoverPasswordPage() {
   return (

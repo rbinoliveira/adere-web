@@ -10,5 +10,5 @@ type AddAuthCookiesProps = {
 export async function addAuthCookies({
   user,
 }: AddAuthCookiesProps): Promise<void> {
-  await setCookie(appCookies.USER_ID, user)
+  await setCookie(appCookies.USER, user)
 }

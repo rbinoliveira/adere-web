@@ -1,6 +1,11 @@
 import type { Metadata } from 'next'
 
-import { UI } from '@/application/_shared/components'
+import {
+  AppSidebar,
+  AppSidebarHeader,
+  SidebarInset,
+  SidebarProvider,
+} from '@/application/_shared/components/organisms/sidebar/sidebar'
 
 export const metadata: Metadata = {
   title: 'Pill Reminder',
@@ -12,14 +17,12 @@ export default function DashboardLayout({
   children: React.ReactNode
 }>) {
   return (
-    <UI.SidebarProvider>
-      <UI.AppSidebar />
-      <UI.SidebarInset className="bg-background-secondary flex w-full flex-col">
-        <UI.AppSidebarHeader />
-        <main className="p-5 md:p-8 w-full max-w-[1200px] mx-auto">
-          {children}
-        </main>
-      </UI.SidebarInset>
-    </UI.SidebarProvider>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset className="flex w-full flex-col">
+        <AppSidebarHeader />
+        <main className="p-6 w-full max-w-[1200px] mx-auto">{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }

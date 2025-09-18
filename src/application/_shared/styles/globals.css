@@ -4,12 +4,13 @@
 
 @layer base {
   :root {
-    --background: #ffffff;
+    --background: #f9fafb;
     --background-contrast: #f7f7fc;
     --background-secondary: #F7F7FC;
     --border-one: #E5E7EB;
     --border-two: #E1E1FB;
-    --primary: #5541D7;
+    --border-three: #D1D5DB;
+    --primary: #0066CC;
     --primary-contrast: #ffffff;
     --primary-light: #A3C8FF;
     --danger-one: #DC2626;
@@ -22,8 +23,8 @@
     --text-six: #6B7280;
     --text-seven: #374151;
     --green-one: #10B981;
-    --blue-one: #0066CC;
     --yellow-one: #F59E0B;
+    --icon: #9CA3AF;
 
     --radius: 8px;
     --radius-alt: 6px;
@@ -36,6 +37,7 @@
   --color-background-secondary: var(--background-secondary);
   --color-border-one: var(--border-one);
   --color-border-two: var(--border-two);
+  --color-border-three: var(--border-three);
   --color-primary: var(--primary);
   --color-primary-contrast: var(--primary-contrast);
   --color-primary-light: var(--primary-light);
@@ -49,8 +51,8 @@
   --color-text-six: var(--text-six);
   --color-text-seven: var(--text-seven);
   --color-green-one: var(--green-one);
-  --color-blue-one: var(--blue-one);
   --color-yellow-one: var(--yellow-one);
+  --color-icon: var(--icon);
 
   --font-inter: var(--inter);
   --radius-radius: var(--radius);
@@ -70,12 +72,20 @@
     @apply text-2xl shrink-0;
   }
 
-  .linear-bg-one {
+  .linear-one {
     background: linear-gradient(90deg, #0066CC 0%, #004499 100%);
   }
 
-  .linear-bg-two {
+  .linear-two {
     background: linear-gradient(90deg, #0066CC 0%, #2563EB 100%);
+  }
+
+  .linear-three {
+    background: linear-gradient(90deg, #0284C7 0%, #0369A1 100%);
+  }
+
+  .linear-four {
+    background: linear-gradient(90deg, #F9FAFB 0%, #F3F4F6 100%);
   }
 
   .shadow-one {
@@ -88,6 +98,10 @@
     box-shadow: 
       0px 4px 6px rgba(0, 0, 0, 0.1),
       0px 10px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .shadow-three {
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
   }
 }
 

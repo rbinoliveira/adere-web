@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import '@/application/_shared/styles/globals.css'
 
 import type { Metadata } from 'next'
@@ -21,12 +22,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html
-      lang="pt-BR"
-      suppressHydrationWarning
-      className={`${inter.className} antialiased`}
-    >
-      <body>
+    <html lang="pt-BR" className={`${inter.className} antialiased`}>
+      <body cz-shortcut-listen="true">
         <RootProviders>{children}</RootProviders>
       </body>
     </html>
