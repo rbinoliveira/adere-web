@@ -51,9 +51,7 @@ export async function upsertDocument<T extends Record<string, any>>(
   id: string,
   data: T,
 ): Promise<void> {
-  console.log(data)
   const docRef = doc(db, collectionName, id)
-
   await setDoc(docRef, data, { merge: true })
 }
 

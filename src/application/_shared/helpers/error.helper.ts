@@ -44,8 +44,6 @@ export function handleError({ message, err }: ErrorType) {
     })
   }
 
-  console.log(err)
-
   return toast('Error', {
     description: message ?? 'Um erro inesperado ocorreu',
   })

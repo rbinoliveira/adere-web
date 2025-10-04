@@ -4,10 +4,10 @@ import {
   sendPasswordResetEmail,
   signInWithCredential,
   signInWithPopup,
-  updateProfile,
 } from 'firebase/auth'
 import { toast } from 'sonner'
 
+import { addAuthCookies } from '@/application/_shared/helpers/add-auth-cookies.helper'
 import { handleError } from '@/application/_shared/helpers/error.helper'
 import { auth, googleProvider } from '@/application/_shared/libs/firebase'
 import { LoginSchema } from '@/application/auth/schemas/login.schema'
@@ -41,8 +41,14 @@ async function registerWithCredentials(data: RegisterSchema) {
       data.password,
     )
 
-    await updateProfile(userCredential.user, {
-      displayName: data.name,
+    await addAuthCookies({
+      user: {
+        email: data.email,
+        name: data.name,
+        role: 'admin',
+        photo: '',
+        id: userCredential.user.uid,
+      },
     })
 
     toast('Success', {

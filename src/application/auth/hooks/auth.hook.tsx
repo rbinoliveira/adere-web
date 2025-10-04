@@ -68,14 +68,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function getOrCreateFirestoreUser(
     firebaseUser: FirebaseUser,
   ): Promise<User> {
-    console.log(firebaseUser)
     const userDocument = await getDocument<User>('users', firebaseUser.uid)
 
     if (!userDocument) {
+      const userByCookies = await getAuthCookies()
+      const parsedUserByCookies = userByCookies
+        ? JSON.parse(userByCookies)
+        : null
       const newUser: User = {
         id: firebaseUser.uid,
         email: firebaseUser.email ?? '',
-        name: firebaseUser.displayName ?? '',
+        name: firebaseUser.displayName ?? parsedUserByCookies?.name ?? '',
         role: 'admin',
         photo: firebaseUser.photoURL ?? '',
       }
