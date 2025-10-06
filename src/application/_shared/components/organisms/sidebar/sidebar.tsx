@@ -24,7 +24,7 @@ import { getCompoundName } from '@/application/_shared/helpers/name-manipulator.
 import { useIsMobile } from '@/application/_shared/helpers/use-mobile'
 import { cn } from '@/application/_shared/libs/tw-merge'
 import { useAuth } from '@/application/auth/hooks/auth.hook'
-import { signOut } from '@/application/auth/services/auth.service'
+import { signOut } from '@/application/auth/services/auth-firebase.service'
 
 const SIDEBAR_WIDTH = '256px'
 

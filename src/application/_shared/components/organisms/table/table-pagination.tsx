@@ -7,6 +7,7 @@ import {
   Button,
   ButtonProps,
 } from '@/application/_shared/components/atoms/button'
+import { useTable } from '@/application/_shared/hooks/table.hook'
 import { cn } from '@/application/_shared/libs/tw-merge'
 
 export type TablePaginationProps = {
@@ -19,9 +20,9 @@ export type TablePaginationProps = {
 export function TablePagination({
   totalItems,
   totalPages,
-  currentPage,
-  itemsPerPage,
 }: TablePaginationProps) {
+  const { currentPage, itemsPerPage } = useTable()
+
   const pagesCountText = `Mostrando ${
     totalItems > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0
   } a
@@ -54,36 +55,36 @@ export function TablePagination({
   )
 }
 
-function TablePaginationButtonsContainer({
-  totalItems,
-  totalPages,
-  currentPage,
-  itemsPerPage,
-}: TablePaginationProps) {
-  const [page, setPage] = React.useState(1)
+function TablePaginationButtonsContainer({ totalPages }: TablePaginationProps) {
+  const { updateCurrentPage, currentPage } = useTable()
 
   const siblingsCount = 1
   const previousPages =
-    page > 1 ? generatePagesArray(page - 1 - siblingsCount, page - 1) : []
+    currentPage > 1
+      ? generatePagesArray(currentPage - 1 - siblingsCount, currentPage - 1)
+      : []
   const nextPages =
-    page < totalPages
-      ? generatePagesArray(page, Math.min(page + siblingsCount, totalPages))
+    currentPage < totalPages
+      ? generatePagesArray(
+          currentPage,
+          Math.min(currentPage + siblingsCount, totalPages),
+        )
       : []
   return (
     <>
       <TablePaginationButton
-        onClick={() => page > 1 && setPage(page - 1)}
-        disabled={page === 1}
+        onClick={() => updateCurrentPage(currentPage - 1)}
+        disabled={currentPage === 1}
       >
         <ChevronLeft size={14} className="text-text-six" />
       </TablePaginationButton>
 
-      {page > 1 + siblingsCount && (
+      {currentPage > 1 + siblingsCount && (
         <>
-          <TablePaginationButton onClick={() => setPage(1)}>
+          <TablePaginationButton onClick={() => updateCurrentPage(1)}>
             1
           </TablePaginationButton>
-          {page > 2 + siblingsCount && (
+          {currentPage > 2 + siblingsCount && (
             <TablePaginationButton className="cursor-not-allowed text-gray-300/30">
               ...
             </TablePaginationButton>
@@ -94,36 +95,41 @@ function TablePaginationButtonsContainer({
       {previousPages.map((previousPage) => (
         <TablePaginationButton
           key={previousPage}
-          onClick={() => setPage(previousPage)}
+          onClick={() => updateCurrentPage(previousPage)}
         >
           {previousPage}
         </TablePaginationButton>
       ))}
 
-      <TablePaginationButton isActive>{page}</TablePaginationButton>
+      <TablePaginationButton isActive>{currentPage}</TablePaginationButton>
 
       {nextPages.map((nextPage) => (
-        <TablePaginationButton key={nextPage} onClick={() => setPage(nextPage)}>
+        <TablePaginationButton
+          key={nextPage}
+          onClick={() => updateCurrentPage(nextPage)}
+        >
           {nextPage}
         </TablePaginationButton>
       ))}
 
-      {page + siblingsCount < totalPages && (
+      {currentPage + siblingsCount < totalPages && (
         <>
-          {page + 1 + siblingsCount < totalPages && (
+          {currentPage + 1 + siblingsCount < totalPages && (
             <TablePaginationButton className="cursor-not-allowed text-gray-300/30">
               ...
             </TablePaginationButton>
           )}
-          <TablePaginationButton onClick={() => setPage(totalPages)}>
+          <TablePaginationButton onClick={() => updateCurrentPage(totalPages)}>
             {totalPages}
           </TablePaginationButton>
         </>
       )}
 
       <TablePaginationButton
-        onClick={() => page < totalPages && setPage(page + 1)}
-        disabled={page === totalPages}
+        onClick={() =>
+          currentPage < totalPages && updateCurrentPage(currentPage + 1)
+        }
+        disabled={currentPage === totalPages}
       >
         <ChevronRight size={14} className="text-text-six" />
       </TablePaginationButton>

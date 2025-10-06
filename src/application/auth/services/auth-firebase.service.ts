@@ -5,16 +5,18 @@ import {
   signInWithCredential,
   signInWithPopup,
 } from 'firebase/auth'
+import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore'
 import { toast } from 'sonner'
 
 import { addAuthCookies } from '@/application/_shared/helpers/add-auth-cookies.helper'
 import { handleError } from '@/application/_shared/helpers/error.helper'
-import { auth, googleProvider } from '@/application/_shared/libs/firebase'
+import { auth, db, googleProvider } from '@/application/_shared/libs/firebase'
+import { User } from '@/application/auth/hooks/auth.hook'
 import { LoginSchema } from '@/application/auth/schemas/login.schema'
 import { RecoverPasswordSchema } from '@/application/auth/schemas/recover-password.schema'
 import { RegisterSchema } from '@/application/auth/schemas/register.schema'
 
-async function signInWithGoogle() {
+export async function signInWithGoogle() {
   try {
     await signInWithPopup(auth, googleProvider)
   } catch (err) {
@@ -22,7 +24,7 @@ async function signInWithGoogle() {
   }
 }
 
-async function sendPasswordReset(data: RecoverPasswordSchema) {
+export async function sendPasswordReset(data: RecoverPasswordSchema) {
   try {
     await sendPasswordResetEmail(auth, data.email)
     toast('Success', {
@@ -33,7 +35,7 @@ async function sendPasswordReset(data: RecoverPasswordSchema) {
   }
 }
 
-async function registerWithCredentials(data: RegisterSchema) {
+export async function registerWithCredentials(data: RegisterSchema) {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -59,7 +61,7 @@ async function registerWithCredentials(data: RegisterSchema) {
   }
 }
 
-async function signInWithCredentials(data: LoginSchema) {
+export async function signInWithCredentials(data: LoginSchema) {
   try {
     await signInWithCredential(
       auth,
@@ -70,7 +72,7 @@ async function signInWithCredentials(data: LoginSchema) {
   }
 }
 
-async function signOut() {
+export async function signOut() {
   try {
     await auth.signOut()
   } catch (err) {
@@ -80,7 +82,7 @@ async function signOut() {
   }
 }
 
-async function createPatient() {
+export async function createPatient() {
   try {
     // Verify if user exists on authentication
     // if not exist, create it on authentication
@@ -92,10 +94,18 @@ async function createPatient() {
   }
 }
 
-export {
-  signInWithGoogle,
-  sendPasswordReset,
-  registerWithCredentials,
-  signInWithCredentials,
-  signOut,
+export async function getUser(id: string): Promise<User | null> {
+  const snap = await getDoc(doc(db, 'users', id))
+  const data = snap.data() as User
+  return snap.exists() ? data : null
+}
+
+export async function upsertUser(id: string, data: User): Promise<void> {
+  const docRef = doc(db, 'users', id)
+  await setDoc(docRef, data, { merge: true })
+}
+
+export async function deleteUser(id: string): Promise<void> {
+  const docRef = doc(db, 'users', id)
+  await deleteDoc(docRef)
 }

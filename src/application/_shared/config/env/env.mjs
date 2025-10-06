@@ -1,11 +1,12 @@
 import { z } from 'zod'
 
-const server = z.object({})
+const server = z.object({
+  GCP_SERVICE_ACCOUNT: z.string().min(1),
+  GCP_FIRESTORE_DB_ID: z.string().min(1),
+  GCP_STORAGE_BUCKET_ID: z.string().min(1),
+})
 
 const client = z.object({
-  NEXT_PUBLIC_BACKEND_URL: z.string().url(),
-  NEXT_PUBLIC_BACKEND_NAME: z.string().min(1),
-  NEXT_PUBLIC_FRONTEND_NAME: z.string().min(1),
   NEXT_PUBLIC_FIREBASE_API_KEY: z.string().min(1),
   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: z.string().min(1),
   NEXT_PUBLIC_FIREBASE_PROJECT_ID: z.string().min(1),
@@ -14,13 +15,13 @@ const client = z.object({
   NEXT_PUBLIC_FIREBASE_APP_ID: z.string().min(1),
   NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: z.string().min(1),
   NEXT_PUBLIC_APP_NAME: z.string().min(1),
-  NEXT_PUBLIC_APP_URL: z.string().url(),
+  NEXT_PUBLIC_VERCEL_URL: z.string().min(1),
 })
 
 const processEnv = {
-  NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
-  NEXT_PUBLIC_BACKEND_NAME: process.env.NEXT_PUBLIC_BACKEND_NAME,
-  NEXT_PUBLIC_FRONTEND_NAME: process.env.NEXT_PUBLIC_FRONTEND_NAME,
+  GCP_SERVICE_ACCOUNT: process.env.GCP_SERVICE_ACCOUNT,
+  GCP_FIRESTORE_DB_ID: process.env.GCP_FIRESTORE_DB_ID,
+  GCP_STORAGE_BUCKET_ID: process.env.GCP_STORAGE_BUCKET_ID,
   NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:
     process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -33,7 +34,7 @@ const processEnv = {
   NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID:
     process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
   NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
-  NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+  NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,
 }
 
 // Don't touch the part below

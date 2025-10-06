@@ -21,24 +21,29 @@ import { InputError } from '@/application/_shared/components/molecules/form/inpu
 import { InputLabel } from '@/application/_shared/components/molecules/form/input-label'
 import { cn } from '@/application/_shared/libs/tw-merge'
 
-export interface PrimitiveInputSelectProps
-  extends React.ComponentProps<'select'> {
+export type PrimitiveInputSelectProps = {
   isErrored?: boolean
   variant?: 'base' | 'sm'
   options: { value: string | number; label: string }[]
+  value: string | number
+  onChange: (value: string | number) => void
+  id: string
 }
 
 function PrimitiveInputSelect({
   isErrored,
   variant = 'base',
   options,
+  value,
+  onChange,
 }: PrimitiveInputSelectProps) {
   const [isFocused, setIsFocused] = React.useState(false)
 
-  const [selected, setSelected] = React.useState(options[0])
+  const selectedValue =
+    options.find((option) => option.value === value)?.label || value
 
   return (
-    <Listbox value={selected} onChange={setSelected}>
+    <Listbox value={value} onChange={onChange}>
       <ListboxButton
         className={cn(
           'flex items-center relative w-full text-left gap-4 justify-between',
@@ -52,7 +57,7 @@ function PrimitiveInputSelect({
           variant === 'base' ? 'px-4' : 'px-2',
         )}
       >
-        {selected.label}
+        {selectedValue}
         <ChevronDown
           className="group pointer-events-none text-lg text-text-four"
           aria-hidden="true"
@@ -102,15 +107,15 @@ function PrimitiveInputSelect({
   )
 }
 
-export type InputSelectProps<T extends FieldValues> =
-  PrimitiveInputSelectProps & {
-    name: Path<T>
-    control: Control<T>
-    defaultValue?: PathValue<T, Path<T>>
-    label?: string
-    className?: string
-    variant?: 'base' | 'sm'
-  }
+export type InputSelectProps<T extends FieldValues> = {
+  name: Path<T>
+  control: Control<T>
+  defaultValue?: PathValue<T, Path<T>>
+  label?: string
+  className?: string
+  variant?: 'base' | 'sm'
+  options: { value: string | number; label: string }[]
+}
 
 function InputSelect<T extends FieldValues>({
   name,
@@ -128,7 +133,7 @@ function InputSelect<T extends FieldValues>({
       render={({ field, fieldState: { error } }) => (
         <div className={cn('flex w-full flex-col gap-2', className)}>
           <InputLabel label={label} htmlFor={name} />
-          <PrimitiveInputSelect id={name} {...field} {...props} />
+          <PrimitiveInputSelect {...field} {...props} id={name} />
           <InputError error={error} />
         </div>
       )}

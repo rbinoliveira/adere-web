@@ -14,9 +14,9 @@ import { InputText } from '@/application/_shared/components/molecules/form/input
 import { appRoutes } from '@/application/_shared/constants/app-routes.constant'
 import { addAuthCookies } from '@/application/_shared/helpers/add-auth-cookies.helper'
 import { handleError } from '@/application/_shared/helpers/error.helper'
-import { upsertDocument } from '@/application/_shared/services/shared.service'
 import { useAuth } from '@/application/auth/hooks/auth.hook'
 import { UserSchema, userSchema } from '@/application/auth/schemas/user.schema'
+import { upsertUser } from '@/application/auth/services/auth-firebase.service'
 
 export function CompleteProfileForm() {
   const { user, updateUser } = useAuth()
@@ -36,8 +36,8 @@ export function CompleteProfileForm() {
   async function onSubmit(data: UserSchema) {
     try {
       if (!user?.id) return
-      await upsertDocument('users', user.id, data)
       const updatedUser = { ...data, id: user.id, photo: user.photo }
+      await upsertUser(user.id, updatedUser)
       await addAuthCookies({
         user: updatedUser,
       })

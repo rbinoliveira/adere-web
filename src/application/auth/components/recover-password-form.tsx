@@ -11,7 +11,7 @@ import {
   RecoverPasswordSchema,
   recoverPasswordSchema,
 } from '@/application/auth/schemas/recover-password.schema'
-import { sendPasswordReset } from '@/application/auth/services/auth.service'
+import { sendPasswordReset } from '@/application/auth/services/auth-firebase.service'
 
 export function RecoverPasswordForm() {
   const { control, handleSubmit } = useForm<RecoverPasswordSchema>({

@@ -24,7 +24,7 @@ export interface PrimitiveInputTextProps extends React.ComponentProps<'input'> {
 
 const svgClassName = cn(
   'mx-3 absolute top-1/2 -translate-y-1/2',
-  '[&>*]:h-[1.125rem] [&>*]:w-[1.125rem] text-svg-placeholder',
+  '[&>*]:h-[1.125rem] [&>*]:w-[1.125rem] text-icon',
 )
 
 const PrimitiveInputText = React.forwardRef<
@@ -51,7 +51,6 @@ const PrimitiveInputText = React.forwardRef<
       <div
         className={cn(
           'bg-white rounded-xl text-text-one flex w-full',
-          'placeholder:text-text-two',
           'border-border-one h-[60px] relative',
           inputSize === 'lg' ? 'h-[60px] border-2' : 'h-[50px] border',
           isErrored && 'border-danger-one',
@@ -80,6 +79,7 @@ const PrimitiveInputText = React.forwardRef<
           }
           className={cn(
             'focus:outline-none flex-1 px-3',
+            'placeholder:text-placeholder',
             disabled && 'opacity-50 cursor-not-allowed',
             iconBefore && 'pl-10',
             iconAfter && 'pr-10',

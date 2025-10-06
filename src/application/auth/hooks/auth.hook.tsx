@@ -20,9 +20,9 @@ import { generateRandomPassword } from '@/application/_shared/helpers/generate-p
 import { getAuthCookies } from '@/application/_shared/helpers/get-auth-cookies.helper'
 import { auth } from '@/application/_shared/libs/firebase'
 import {
-  getDocument,
-  upsertDocument,
-} from '@/application/_shared/services/shared.service'
+  getUser,
+  upsertUser,
+} from '@/application/auth/services/auth-firebase.service'
 
 export type User = {
   id: string
@@ -68,7 +68,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function getOrCreateFirestoreUser(
     firebaseUser: FirebaseUser,
   ): Promise<User> {
-    const userDocument = await getDocument<User>('users', firebaseUser.uid)
+    const userDocument = await getUser(firebaseUser.uid)
 
     if (!userDocument) {
       const userByCookies = await getAuthCookies()
@@ -83,7 +83,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         photo: firebaseUser.photoURL ?? '',
       }
 
-      await upsertDocument<User>('users', firebaseUser.uid, newUser)
+      await upsertUser(firebaseUser.uid, newUser)
 
       return newUser
     }

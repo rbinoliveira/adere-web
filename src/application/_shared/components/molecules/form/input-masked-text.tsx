@@ -26,7 +26,7 @@ export interface PrimitiveInputMaskedTextProps {
 
 const svgClassName = cn(
   'mx-3 absolute top-1/2 -translate-y-1/2',
-  '[&>*]:h-[1.125rem] [&>*]:w-[1.125rem] text-svg-placeholder [&_svg]:h-[1.125rem] [&_svg]:w-[1.125rem]',
+  '[&>*]:h-[1.125rem] [&>*]:w-[1.125rem] text-icon [&_svg]:h-[1.125rem] [&_svg]:w-[1.125rem]',
 )
 
 export const PrimitiveInputMaskedText = React.forwardRef<
@@ -86,10 +86,9 @@ export const PrimitiveInputMaskedText = React.forwardRef<
     return (
       <div
         className={cn(
-          'bg-white rounded-radius text-text-one flex w-full',
-          'placeholder:text-text-two',
+          'bg-white rounded-xl text-text-one flex w-full',
           'disabled:cursor-not-allowed disabled:opacity-50',
-          'border-border-one rounded-lg h-[60px] relative',
+          'border-border-one h-[60px] relative',
           inputSize === 'lg' ? 'h-[60px] border-2' : 'h-[50px] border',
           isErrored && 'border-danger-one',
           isFocused && 'border-primary',
@@ -108,6 +107,7 @@ export const PrimitiveInputMaskedText = React.forwardRef<
           onBlur={() => setIsFocused(false)}
           className={cn(
             'focus:outline-none flex-1 px-3',
+            'placeholder:text-placeholder',
             iconBefore && 'pl-10',
             elementAfter && 'pr-10',
           )}

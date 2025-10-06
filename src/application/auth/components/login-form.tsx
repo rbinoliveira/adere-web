@@ -15,7 +15,7 @@ import {
 import {
   signInWithCredentials,
   signInWithGoogle,
-} from '@/application/auth/services/auth.service'
+} from '@/application/auth/services/auth-firebase.service'
 
 export function LoginForm() {
   const { control, handleSubmit } = useForm<LoginSchema>({

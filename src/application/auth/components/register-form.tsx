@@ -15,7 +15,7 @@ import {
 import {
   registerWithCredentials,
   signInWithGoogle,
-} from '@/application/auth/services/auth.service'
+} from '@/application/auth/services/auth-firebase.service'
 
 export function RegisterForm() {
   const { control, handleSubmit } = useForm<RegisterSchema>({

@@ -2,11 +2,11 @@
 
 import { Plus } from 'lucide-react'
 import Link from 'next/link'
-import { useForm } from 'react-hook-form'
 
 import { Button } from '@/application/_shared/components/atoms/button'
 import { InputSearch } from '@/application/_shared/components/molecules/form/input-search'
 import { InputSelect } from '@/application/_shared/components/molecules/form/input-select'
+import { useTable } from '@/application/_shared/hooks/table.hook'
 import { cn } from '@/application/_shared/libs/tw-merge'
 
 export type TableFilterProps = {
@@ -21,7 +21,9 @@ export type TableFilterProps = {
 }
 
 export function TableFilter({ search, add, className }: TableFilterProps) {
-  const { control } = useForm()
+  const {
+    form: { control },
+  } = useTable()
 
   return (
     <div className={cn('flex items-center justify-between', className)}>
@@ -36,7 +38,7 @@ export function TableFilter({ search, add, className }: TableFilterProps) {
           Mostrar:
           <InputSelect
             control={control}
-            name="select"
+            name="itemsPerPage"
             className="max-w-[150px]"
             variant="sm"
             options={[
