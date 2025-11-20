@@ -49,7 +49,7 @@ export function TablePatientActions({ patient }: TablePatientActionsProps) {
   return (
     <div className="flex items-center gap-2">
       <Button variant="ghost" asChild>
-        <Link href={`/pacientes/editar/${patient.id}`}>
+        <Link href={`/pacientes/${patient.id}`}>
           <SquarePen className="text-primary-alternative" />
         </Link>
       </Button>
