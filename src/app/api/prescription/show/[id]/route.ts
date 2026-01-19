@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { dbAdmin } from '@/application/_shared/libs/firebase-admin'
+import { dbAdmin } from '@/shared/libs/firebase-admin'
 
 export async function GET(
   _: Request,

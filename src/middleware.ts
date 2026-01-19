@@ -1,11 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server'
 
-import { appCookies } from '@/application/_shared/constants/app-cookies.constant'
+import { appCookies } from '@/shared/constants/app-cookies.constant'
 import {
   appPublicRoutes,
   appRoutes,
-} from '@/application/_shared/constants/app-routes.constant'
-import { userSchema } from '@/application/auth/schemas/user.schema'
+} from '@/shared/constants/app-routes.constant'
+import { userSchema } from '@/features/auth/schemas/user.schema'
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl

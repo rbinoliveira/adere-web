@@ -1,13 +1,12 @@
-import { differenceInDays } from 'date-fns'
 import { NextResponse } from 'next/server'
 
 import {
   normalizeName,
   normalizePhone,
-} from '@/application/_shared/helpers/normalize-string.helper'
-import { authAdmin, dbAdmin } from '@/application/_shared/libs/firebase-admin'
-import { PatientModel } from '@/application/patient/models/patient.model'
-import { savePatientUseCaseSchema } from '@/application/patient/schemas/save-patient.schema'
+} from '@/shared/helpers/normalize-string.helper'
+import { authAdmin, dbAdmin } from '@/shared/libs/firebase-admin'
+import { PatientModel } from '@/features/patient/models/patient.model'
+import { savePatientUseCaseSchema } from '@/features/patient/schemas/save-patient.schema'
 
 export async function PUT(req: Request) {
   try {
@@ -80,19 +79,12 @@ export async function PUT(req: Request) {
     const authUpdates: {
       displayName?: string
       email?: string
-      password?: string
     } = {}
     if (data.name && data.name !== authUser.displayName) {
       authUpdates.displayName = data.name
     }
     if (data.email && data.email !== authUser.email) {
       authUpdates.email = data.email
-    }
-    if (
-      differenceInDays(new Date(data.dob), new Date(userData.dob)) !== 0 &&
-      data.password
-    ) {
-      authUpdates.password = data.password
     }
 
     if (Object.keys(authUpdates).length > 0) {

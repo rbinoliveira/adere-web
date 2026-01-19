@@ -5,7 +5,7 @@ import {
   AppSidebarHeader,
   SidebarInset,
   SidebarProvider,
-} from '@/application/_shared/components/organisms/sidebar/sidebar'
+} from '@/shared/components/organisms/sidebar/sidebar'
 
 export const metadata: Metadata = {
   title: 'Lucy',

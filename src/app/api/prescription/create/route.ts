@@ -3,9 +3,9 @@ import { NextResponse } from 'next/server'
 import {
   normalizeName,
   normalizePhone,
-} from '@/application/_shared/helpers/normalize-string.helper'
-import { dbAdmin } from '@/application/_shared/libs/firebase-admin'
-import { savePrescriptionUseCaseSchema } from '@/application/prescription/schemas/save-prescription.schema'
+} from '@/shared/helpers/normalize-string.helper'
+import { dbAdmin } from '@/shared/libs/firebase-admin'
+import { savePrescriptionUseCaseSchema } from '@/features/prescription/schemas/save-prescription.schema'
 
 export async function POST(req: Request) {
   try {
