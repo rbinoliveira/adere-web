@@ -41,10 +41,6 @@ export async function PUT(req: Request) {
 
     const userData = userDoc.data() as PatientModel
 
-    // ------------------------
-    // ✅ Verifica e evita email duplicado no Firestore
-    // ------------------------
-    // Sugestão: normalize o email ao salvar (lowercase + trim). Aqui faço a checagem considerando o valor recebido.
     const newEmail = data.email?.trim()
     const currentEmail = userData.email?.trim()
 
@@ -63,9 +59,6 @@ export async function PUT(req: Request) {
       }
     }
 
-    // ------------------------
-    // Atualiza também no Auth se necessário (mesma lógica sua)
-    // ------------------------
     let authUser
     try {
       authUser = await authAdmin.getUser(userId)
@@ -106,9 +99,6 @@ export async function PUT(req: Request) {
       }
     }
 
-    // ------------------------
-    // Atualiza Firestore
-    // ------------------------
     await dbAdmin
       .collection('users')
       .doc(userId)

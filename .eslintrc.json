@@ -2,8 +2,8 @@
 	"extends": ["@rbinflow/eslint-config/next"],
 	"rules": {
 		"prettier/prettier": [
-			"error",
-			{
+      "error",
+      {
 				"printWidth": 80,
 				"tabWidth": 2,
 				"useTabs": false,
@@ -14,7 +14,7 @@
 				"endOfLine": "lf",
 				"bracketSpacing": true,
 				"bracketSameLine": false
-			}
-		]
+      }
+    ]
 	}
 }

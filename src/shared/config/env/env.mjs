@@ -37,11 +37,7 @@ const processEnv = {
 
 const merged = server.merge(client)
 
-/** @typedef {z.input<typeof merged>} MergedInput */
-/** @typedef {z.infer<typeof merged>} MergedOutput */
-/** @typedef {z.SafeParseReturnType<MergedInput, MergedOutput>} MergedSafeParseReturn */
-
-let envVars = /** @type {MergedOutput} */ (process.env)
+let envVars = process.env
 
 const skip =
   !!process.env.SKIP_ENV_VALIDATION &&
@@ -50,9 +46,7 @@ const skip =
 if (!skip) {
   const isServer = typeof window === 'undefined'
 
-  const parsed = /** @type {MergedSafeParseReturn} */ (
-    isServer ? merged.safeParse(processEnv) : client.safeParse(processEnv)
-  )
+  const parsed = isServer ? merged.safeParse(processEnv) : client.safeParse(processEnv)
 
   if (parsed.success === false) {
     console.error(
@@ -71,7 +65,7 @@ if (!skip) {
             ? '❌ Attempted to access a server-side environment variable on the client'
             : `❌ Attempted to access server-side environment variable '${prop}' on the client`,
         )
-      return target[/** @type {keyof typeof target} */ (prop)]
+      return target[prop]
     },
   })
 }

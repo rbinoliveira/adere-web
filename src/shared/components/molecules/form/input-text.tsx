@@ -130,19 +130,24 @@ function InputText<T extends FieldValues>({
       name={name}
       control={control}
       defaultValue={defaultValue}
-      render={({ field, fieldState: { error } }) => (
-        <div className={cn('flex w-full flex-col gap-2', className)}>
-          <InputLabel label={label} htmlFor={name} inputSize={inputSize} />
-          <PrimitiveInputText
-            id={name}
-            isErrored={!!error}
-            inputSize={inputSize}
-            {...field}
-            {...props}
-          />
-          <InputError error={error} />
-        </div>
-      )}
+      render={({ field, fieldState: { error } }) => {
+        const inputValue = field.value ?? (props.type === 'number' ? '' : '')
+
+        return (
+          <div className={cn('flex w-full flex-col gap-2', className)}>
+            <InputLabel label={label} htmlFor={name} inputSize={inputSize} />
+            <PrimitiveInputText
+              id={name}
+              isErrored={!!error}
+              inputSize={inputSize}
+              {...field}
+              {...props}
+              value={inputValue}
+            />
+            <InputError error={error} />
+          </div>
+        )
+      }}
     />
   )
 }

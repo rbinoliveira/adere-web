@@ -6,10 +6,10 @@ import {
   onAuthStateChanged,
   User as FirebaseUser,
 } from 'firebase/auth'
-import { useRouter } from 'next/navigation'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 
 import { UserModel } from '@/features/auth/models/user.model'
+import { userSchema } from '@/features/auth/schemas/user.schema'
 import {
   getUser,
   upsertUser,
@@ -24,7 +24,6 @@ import { handleError } from '@/shared/helpers/error.helper'
 import { generateRandomPassword } from '@/shared/helpers/generate-password'
 import { getAuthCookies } from '@/shared/helpers/get-auth-cookies.helper'
 import { auth } from '@/shared/libs/firebase'
-import { userSchema } from '@/features/auth/schemas/user.schema'
 
 type AuthContextType = {
   user: UserModel | null
@@ -35,8 +34,6 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserModel | null>(null)
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
   const previousUserRef = useRef<UserModel | null>(null)
   const hasRedirectedRef = useRef(false)
 
@@ -137,58 +134,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const previousUser = previousUserRef.current
       const userChanged = previousUser?.id !== userUpdated?.id
-      
+
       await setUserAsLoggedIn(userUpdated)
-      
-      // Atualiza a ref com o novo usuário
+
       previousUserRef.current = userUpdated
 
-      // O redirecionamento é feito pelo proxy no servidor
-      // Apenas força reload quando o usuário faz login (de null para user)
-      // e está em uma rota pública, para que o proxy possa redirecionar
-      if (typeof window !== 'undefined' && userChanged && !hasRedirectedRef.current) {
+      if (
+        typeof window !== 'undefined' &&
+        userChanged &&
+        !hasRedirectedRef.current
+      ) {
         const currentPath = window.location.pathname
         const hasReloadedAfterLogin = sessionStorage.getItem('auth_reload_done')
-        
+
         if (userUpdated && !previousUser) {
-          // Usuário acabou de fazer login
           const profileCompleted = userSchema.safeParse(userUpdated).success
-          const isOnCorrectRoute = profileCompleted 
+          const isOnCorrectRoute = profileCompleted
             ? currentPath === appRoutes.dashboard
             : currentPath === appRoutes.completeProfile
-          
-          // Só força reload se estiver em rota pública ou rota incorreta
-          // e ainda não fez reload após login
-          if (!hasReloadedAfterLogin && (appPublicRoutes.includes(currentPath) || !isOnCorrectRoute)) {
+
+          if (
+            !hasReloadedAfterLogin &&
+            (appPublicRoutes.includes(currentPath) || !isOnCorrectRoute)
+          ) {
             hasRedirectedRef.current = true
             sessionStorage.setItem('auth_reload_done', 'true')
             setTimeout(() => {
               window.location.reload()
             }, 100)
-            return
           } else if (hasReloadedAfterLogin) {
-            // Limpa a flag após usar
             sessionStorage.removeItem('auth_reload_done')
           }
         } else if (!userUpdated && previousUser) {
-          // Usuário acabou de fazer logout
           sessionStorage.removeItem('auth_reload_done')
           if (currentPath !== appRoutes.signIn) {
             hasRedirectedRef.current = true
             window.location.href = appRoutes.signIn
-            return
           }
         }
       }
-
-      setLoading(false)
     })
 
     return unsubscribe
   }, [])
-
-  // Redirecionamento agora é feito no servidor pelo proxy
-  // Removido para evitar content switch (flash de conteúdo)
 
   useEffect(() => {
     async function getUser() {

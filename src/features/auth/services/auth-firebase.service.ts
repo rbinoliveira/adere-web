@@ -70,7 +70,6 @@ export async function signOut() {
   try {
     await auth.signOut()
     await deleteAuthCookies()
-    // Força navegação para login após logout
     if (typeof window !== 'undefined') {
       window.location.href = appRoutes.signIn
     }

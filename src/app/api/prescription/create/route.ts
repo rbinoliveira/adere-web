@@ -11,7 +11,6 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
 
-    // ✅ Validação do corpo da requisição
     const parsed = savePrescriptionUseCaseSchema.safeParse(body)
     if (!parsed.success) {
       return NextResponse.json(
@@ -22,7 +21,6 @@ export async function POST(req: Request) {
 
     const data = parsed.data
 
-    // ✅ Verifica se já existe um registro com o mesmo e-mail
     const prescriptionsRef = dbAdmin.collection('prescriptions')
     const existing = await prescriptionsRef
       .where('email', '==', data.email)
@@ -36,7 +34,6 @@ export async function POST(req: Request) {
       )
     }
 
-    // ✅ Cria o novo documento no Firestore
     const newDocRef = prescriptionsRef.doc()
     await newDocRef.set({
       id: newDocRef.id,

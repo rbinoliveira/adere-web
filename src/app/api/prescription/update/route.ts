@@ -11,7 +11,6 @@ export async function PUT(req: Request) {
   try {
     const body = await req.json()
 
-    // ✅ Validação dos dados recebidos
     const parsed = savePrescriptionUseCaseSchema.safeParse(body)
     if (!parsed.success) {
       return NextResponse.json(
@@ -30,7 +29,6 @@ export async function PUT(req: Request) {
       )
     }
 
-    // ✅ Verifica se o documento existe
     const prescriptionRef = dbAdmin
       .collection('prescriptions')
       .doc(prescriptionId)
@@ -43,7 +41,6 @@ export async function PUT(req: Request) {
       )
     }
 
-    // ✅ Atualiza os campos no Firestore
     await prescriptionRef.update({
       name: data.name,
       phone: data.phone,
