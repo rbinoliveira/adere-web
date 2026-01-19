@@ -10,10 +10,12 @@ export function TablePrescriptionName({
 }: TablePrescriptionNameProps) {
   return (
     <div className="flex items-center gap-3">
-      <Avatar imageUrl={prescription.photo} name={prescription.name} />
+      <Avatar imageUrl={undefined} name={prescription.patientName} />
       <div className="flex flex-col gap-[0.375rem]">
-        <span className="font-semibold">{prescription.name}</span>
-        <span className="text-text-six text-xs">{prescription.email}</span>
+        <span className="font-semibold">{prescription.patientName}</span>
+        <span className="text-text-six text-xs">
+          {prescription.patientEmail}
+        </span>
       </div>
     </div>
   )

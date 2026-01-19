@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server'
 
 import { savePrescriptionUseCaseSchema } from '@/features/prescription/schemas/save-prescription.schema'
-import {
-  normalizeName,
-  normalizePhone,
-} from '@/shared/helpers/normalize-string.helper'
+import { normalizeName } from '@/shared/helpers/normalize-string.helper'
 import { dbAdmin } from '@/shared/libs/firebase-admin'
 
 export async function POST(req: Request) {
@@ -22,30 +19,22 @@ export async function POST(req: Request) {
     const data = parsed.data
 
     const prescriptionsRef = dbAdmin.collection('prescriptions')
-    const existing = await prescriptionsRef
-      .where('email', '==', data.email)
-      .limit(1)
-      .get()
-
-    if (!existing.empty) {
-      return NextResponse.json(
-        { error: 'E-mail já cadastrado na plataforma, tente outro e-mail.' },
-        { status: 400 },
-      )
-    }
-
     const newDocRef = prescriptionsRef.doc()
+
     await newDocRef.set({
       id: newDocRef.id,
-      name: data.name,
-      phone: data.phone,
-      dob: data.dob,
-      email: data.email,
+      patientId: data.patientId,
+      patientEmail: data.patientEmail,
+      patientName: data.patientName,
+      patientNameNormalized: normalizeName(data.patientName),
+      medicineId: data.medicineId,
+      medicineName: data.medicineName,
+      medicineNameNormalized: normalizeName(data.medicineName),
+      dosage: data.dosage,
       ownerId: data.ownerId,
-      role: 'prescription',
-      nameNormalized: normalizeName(data.name),
-      phoneNormalized: normalizePhone(data.phone),
+      status: data.status || 'active',
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     })
 
     return NextResponse.json({

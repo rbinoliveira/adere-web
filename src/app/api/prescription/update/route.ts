@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server'
 
 import { savePrescriptionUseCaseSchema } from '@/features/prescription/schemas/save-prescription.schema'
-import {
-  normalizeName,
-  normalizePhone,
-} from '@/shared/helpers/normalize-string.helper'
+import { getCurrentUserApi } from '@/shared/helpers/get-current-user-api.helper'
+import { normalizeName } from '@/shared/helpers/normalize-string.helper'
 import { dbAdmin } from '@/shared/libs/firebase-admin'
 
 export async function PUT(req: Request) {
@@ -53,13 +51,16 @@ export async function PUT(req: Request) {
     }
 
     await prescriptionRef.update({
-      name: data.name,
-      phone: data.phone,
-      dob: data.dob,
-      email: data.email,
+      patientId: data.patientId,
+      patientEmail: data.patientEmail,
+      patientName: data.patientName,
+      patientNameNormalized: normalizeName(data.patientName),
+      medicineId: data.medicineId,
+      medicineName: data.medicineName,
+      medicineNameNormalized: normalizeName(data.medicineName),
+      dosage: data.dosage,
       ownerId: data.ownerId,
-      nameNormalized: normalizeName(data.name),
-      phoneNormalized: normalizePhone(data.phone),
+      status: data.status || prescriptionData?.status || 'active',
       updatedAt: new Date().toISOString(),
     })
 

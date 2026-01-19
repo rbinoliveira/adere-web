@@ -24,8 +24,8 @@ export function UpdatePrescriptionPage() {
     <DataHandler isError={isError} isLoading={isLoading}>
       <FormCard>
         <FormCardHeader
-          title="Informações do Medicamento"
-          subtitle="Preencha os dados abaixo para editar o medicamento"
+          title="Editar Prescrição"
+          subtitle="Preencha os dados abaixo para editar a prescrição"
         />
         <SavePrescriptionForm prescription={prescription} />
       </FormCard>

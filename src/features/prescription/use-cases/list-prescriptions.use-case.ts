@@ -1,14 +1,5 @@
 import { remove as removeAccents } from 'diacritics'
-import {
-  collection,
-  getCountFromServer,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  startAfter,
-  where,
-} from 'firebase/firestore'
+import { collection, getDocs, query, where } from 'firebase/firestore'
 
 import { PrescriptionModel } from '@/features/prescription/models/prescription.model'
 import { db } from '@/shared/libs/firebase'
@@ -50,15 +41,10 @@ export async function listPrescriptionsUseCase({
     baseQuery = query(
       prescriptionsRef,
       where('ownerId', '==', ownerId),
-      where('email', '==', patientEmail),
-      orderBy('createdAt', 'desc'),
+      where('patientEmail', '==', patientEmail),
     )
   } else {
-    baseQuery = query(
-      prescriptionsRef,
-      where('ownerId', '==', ownerId),
-      orderBy('nameNormalized'),
-    )
+    baseQuery = query(prescriptionsRef, where('ownerId', '==', ownerId))
   }
 
   if (search && search.trim()) {
@@ -71,33 +57,42 @@ export async function listPrescriptionsUseCase({
     const queryConditions: Parameters<typeof query> = [
       prescriptionsRef,
       where('ownerId', '==', ownerId),
-      where('nameNormalized', '>=', searchNormalized),
-      where('nameNormalized', '<', endName),
-      orderBy('nameNormalized'),
     ]
 
     if (patientEmail) {
-      queryConditions.splice(3, 0, where('email', '==', patientEmail))
+      queryConditions.push(where('patientEmail', '==', patientEmail))
     }
 
-    const queryByName = query(...queryConditions)
+    const baseQueryForSearch = query(...queryConditions)
+    const snapshot = await getDocs(baseQueryForSearch)
 
-    const [snapName] = await Promise.all([getDocs(queryByName)])
-
-    const allDocs = [...snapName.docs]
-    const uniqueDocsMap = new Map(allDocs.map((doc) => [doc.id, doc]))
-    const uniqueDocs = Array.from(uniqueDocsMap.values())
-
-    const totalItems = uniqueDocs.length
-    const totalPages = Math.ceil(totalItems / itemsPerPage)
-    const start = (page - 1) * itemsPerPage
-    const end = start + itemsPerPage
-    const pageDocs = uniqueDocs.slice(start, end)
-
-    const prescriptions = pageDocs.map((doc) => ({
+    const allDocs = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...(doc.data() as Omit<PrescriptionModel, 'id'>),
     }))
+
+    const filteredDocs = allDocs.filter((doc) => {
+      const patientNameNormalized = doc.patientNameNormalized || ''
+      const medicineNameNormalized = doc.medicineNameNormalized || ''
+      return (
+        (patientNameNormalized >= searchNormalized &&
+          patientNameNormalized < endName) ||
+        (medicineNameNormalized >= searchNormalized &&
+          medicineNameNormalized < endName)
+      )
+    })
+
+    filteredDocs.sort((a, b) => {
+      const nameA = a.patientNameNormalized || ''
+      const nameB = b.patientNameNormalized || ''
+      return nameA.localeCompare(nameB)
+    })
+
+    const totalItems = filteredDocs.length
+    const totalPages = Math.ceil(totalItems / itemsPerPage)
+    const start = (page - 1) * itemsPerPage
+    const end = start + itemsPerPage
+    const prescriptions = filteredDocs.slice(start, end)
 
     return {
       items: prescriptions,
@@ -108,33 +103,25 @@ export async function listPrescriptionsUseCase({
     }
   }
 
-  const countSnap = await getCountFromServer(baseQuery)
+  const snapshot = await getDocs(baseQuery)
 
-  const totalItems = countSnap.data().count
-  const totalPages = Math.ceil(totalItems / itemsPerPage)
-
-  const skip = (page - 1) * itemsPerPage
-  let startAfterDoc = null
-
-  if (skip > 0) {
-    const prevSnapshot = await getDocs(query(baseQuery, limit(skip)))
-    const docs = prevSnapshot.docs
-    if (docs.length > 0) {
-      startAfterDoc = docs[docs.length - 1]
-    }
-  }
-
-  let finalQuery = baseQuery
-  if (startAfterDoc) {
-    finalQuery = query(baseQuery, startAfter(startAfterDoc))
-  }
-
-  const snapshot = await getDocs(query(finalQuery, limit(itemsPerPage)))
-
-  const prescriptions = snapshot.docs.map((doc) => ({
+  const allPrescriptions = snapshot.docs.map((doc) => ({
     id: doc.id,
     ...(doc.data() as Omit<PrescriptionModel, 'id'>),
   }))
+
+  allPrescriptions.sort((a, b) => {
+    const nameA = a.patientNameNormalized || ''
+    const nameB = b.patientNameNormalized || ''
+    return nameA.localeCompare(nameB)
+  })
+
+  const totalItems = allPrescriptions.length
+  const totalPages = Math.ceil(totalItems / itemsPerPage)
+
+  const start = (page - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  const prescriptions = allPrescriptions.slice(start, end)
 
   return {
     items: prescriptions,

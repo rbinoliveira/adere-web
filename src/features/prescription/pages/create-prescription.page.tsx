@@ -8,8 +8,8 @@ export function CreatePrescriptionPage() {
   return (
     <FormCard>
       <FormCardHeader
-        title="Informações do Medicamento"
-        subtitle="Preencha os dados abaixo para cadastrar um novo medicamento"
+        title="Nova Prescrição"
+        subtitle="Preencha os dados abaixo para criar uma nova prescrição"
       />
       <SavePrescriptionForm />
     </FormCard>

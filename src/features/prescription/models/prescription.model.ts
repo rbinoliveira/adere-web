@@ -1,10 +1,21 @@
+export type PrescriptionStatus = 'active' | 'finished' | 'cancelled'
+
 export type PrescriptionModel = {
-  phone: string
-  name: string
   id: string
-  photo?: string
-  role: 'prescription'
-  dob: Date
+  patientId: string
+  patientEmail: string
+  patientName: string
+  medicineId: string
+  medicineName: string
+  dosage: string
   ownerId: string
-  email: string
+  status: PrescriptionStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export const prescriptionStatusLabels: Record<PrescriptionStatus, string> = {
+  active: 'Ativa',
+  finished: 'Finalizada',
+  cancelled: 'Cancelada',
 }

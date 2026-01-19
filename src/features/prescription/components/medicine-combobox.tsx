@@ -8,112 +8,94 @@ import {
   Field,
   Label,
 } from '@headlessui/react'
-import { ChevronDown, User } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { ChevronDown, Pill } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import { Control, Controller } from 'react-hook-form'
 
-import { useAuth } from '@/features/auth/hooks/auth.hook'
-import { PatientModel } from '@/features/patient/models/patient.model'
-import { ListPatientsService } from '@/features/patient/service/list-patients.service'
+import { MedicineModel } from '@/features/medicine/models/medicine.model'
+import { ListMedicinesService } from '@/features/medicine/service/list-medicines.service'
 import { SavePrescriptionFormSchema } from '@/features/prescription/schemas/save-prescription.schema'
 import { cn } from '@/shared/libs/tw-merge'
 
-type PatientComboboxProps = {
+type MedicineComboboxProps = {
   control: Control<SavePrescriptionFormSchema>
-  onPatientSelect?: (patient: PatientModel | null) => void
-  initialPatientName?: string
+  onMedicineSelect?: (medicine: MedicineModel | null) => void
 }
 
-export function PatientCombobox({
+export function MedicineCombobox({
   control,
-  onPatientSelect,
-  initialPatientName,
-}: PatientComboboxProps) {
-  const { user } = useAuth()
+  onMedicineSelect,
+}: MedicineComboboxProps) {
   const [query, setQuery] = useState('')
-  const [selectedPatient, setSelectedPatient] = useState<PatientModel | null>(
-    null,
-  )
+  const [selectedMedicine, setSelectedMedicine] =
+    useState<MedicineModel | null>(null)
 
-  const { data: patientsData } = ListPatientsService({
-    ownerId: user?.id ?? '',
+  const { data: medicinesData } = ListMedicinesService({
     page: 1,
     itemsPerPage: 100,
     search: query || undefined,
   })
 
-  const patients = useMemo(
-    () => patientsData?.items ?? [],
-    [patientsData?.items],
+  const medicines = useMemo(
+    () => medicinesData?.items ?? [],
+    [medicinesData?.items],
   )
 
-  const filteredPatients = useMemo(() => {
+  const filteredMedicines = useMemo(() => {
     if (query === '') {
-      return patients
+      return medicines
     }
-    return patients.filter((patient) => {
-      return patient.name.toLowerCase().includes(query.toLowerCase())
+    return medicines.filter((medicine) => {
+      return medicine.name.toLowerCase().includes(query.toLowerCase())
     })
-  }, [patients, query])
-
-  useEffect(() => {
-    if (initialPatientName && patients.length > 0 && !selectedPatient) {
-      const patient = patients.find(
-        (p) => p.name.toLowerCase() === initialPatientName.toLowerCase(),
-      )
-      if (patient) {
-        setSelectedPatient(patient)
-        if (onPatientSelect) {
-          onPatientSelect(patient)
-        }
-      }
-    }
-  }, [initialPatientName, patients, selectedPatient, onPatientSelect])
+  }, [medicines, query])
 
   return (
     <Controller
-      name="patientName"
+      name="medicineId"
       control={control}
       render={({ field, fieldState }) => (
         <Field>
-          <Label className="text-text-one text-sm font-medium">Paciente</Label>
+          <Label className="text-text-one text-sm font-medium">
+            Medicamento
+          </Label>
           <Combobox
-            value={selectedPatient}
-            onChange={(patient: PatientModel | null) => {
-              setSelectedPatient(patient)
-              field.onChange(patient?.name ?? '')
-              if (onPatientSelect) {
-                onPatientSelect(patient)
+            value={selectedMedicine}
+            onChange={(medicine: MedicineModel | null) => {
+              setSelectedMedicine(medicine)
+              field.onChange(medicine?.id ?? '')
+              if (onMedicineSelect) {
+                onMedicineSelect(medicine)
               }
             }}
             onClose={() => {
-              if (!selectedPatient) {
+              if (!selectedMedicine) {
                 setQuery('')
               } else {
-                setQuery(selectedPatient.name)
+                setQuery(selectedMedicine.name)
               }
             }}
           >
             <div className="relative">
               <ComboboxInput
-                displayValue={(patient: PatientModel | null) =>
-                  patient?.name ?? field.value ?? ''
+                displayValue={(medicine: MedicineModel | null) =>
+                  medicine?.name ?? field.value ?? ''
                 }
                 onChange={(event) => {
                   const value = event.target.value
                   setQuery(value)
                   field.onChange(value)
                   if (value === '') {
-                    setSelectedPatient(null)
-                    if (onPatientSelect) {
-                      onPatientSelect(null)
+                    setSelectedMedicine(null)
+                    if (onMedicineSelect) {
+                      onMedicineSelect(null)
                     }
                   } else {
-                    const matchingPatient = patients.find(
-                      (p) => p.name.toLowerCase() === value.toLowerCase(),
+                    const matchingMedicine = medicines.find(
+                      (m) => m.name.toLowerCase() === value.toLowerCase(),
                     )
-                    if (!matchingPatient) {
-                      setSelectedPatient(null)
+                    if (!matchingMedicine) {
+                      setSelectedMedicine(null)
                     }
                   }
                 }}
@@ -124,7 +106,7 @@ export function PatientCombobox({
                   'text-sm outline-none transition-colors',
                   fieldState.error && 'border-danger-one',
                 )}
-                placeholder="Buscar paciente..."
+                placeholder="Buscar medicamento..."
               />
               <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
                 <ChevronDown className="text-text-three h-5 w-5" />
@@ -138,15 +120,15 @@ export function PatientCombobox({
                 'empty:invisible',
               )}
             >
-              {filteredPatients.length === 0 && query !== '' ? (
+              {filteredMedicines.length === 0 && query !== '' ? (
                 <div className="text-text-two px-4 py-3 text-sm">
-                  Nenhum paciente encontrado
+                  Nenhum medicamento encontrado
                 </div>
               ) : (
-                filteredPatients.map((patient) => (
+                filteredMedicines.map((medicine) => (
                   <ComboboxOption
-                    key={patient.id}
-                    value={patient}
+                    key={medicine.id}
+                    value={medicine}
                     className={cn(
                       'text-text-one cursor-pointer px-4 py-3 text-sm',
                       'data-focus:bg-primary-light data-focus:text-white',
@@ -154,8 +136,13 @@ export function PatientCombobox({
                     )}
                   >
                     <div className="flex items-center gap-3">
-                      <User className="h-4 w-4" />
-                      <span>{patient.name}</span>
+                      <Pill className="h-4 w-4" />
+                      <div className="flex flex-col">
+                        <span>{medicine.name}</span>
+                        <span className="text-text-two text-xs">
+                          {medicine.dose} - {medicine.pharmaceuticalForm}
+                        </span>
+                      </div>
                     </div>
                   </ComboboxOption>
                 ))

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import {
   listPrescriptionsUseCase,
@@ -10,6 +10,10 @@ export const listPrescriptionsQueryKey = 'listPrescriptionsQueryKey'
 
 export function ListPrescriptionsService(
   params: ListPrescriptionsUseCaseInput,
+  options?: Omit<
+    UseQueryOptions<ListPrescriptionsUseCaseOutput>,
+    'queryKey' | 'queryFn'
+  >,
 ) {
   const query = useQuery<ListPrescriptionsUseCaseOutput>({
     queryKey: [
@@ -21,6 +25,7 @@ export function ListPrescriptionsService(
       params.patientEmail,
     ],
     queryFn: async () => listPrescriptionsUseCase(params),
+    ...options,
   })
   return query
 }

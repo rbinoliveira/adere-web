@@ -25,7 +25,7 @@ export function UpdatePrescriptionService({ onSuccess }: ServiceModel) {
       queryClient.invalidateQueries({
         predicate: (query) => query.queryKey[0] === showPrescriptionQueryKey,
       })
-      toast.success('Medicamento atualizado com sucesso!')
+      toast.success('Prescrição atualizada com sucesso!')
     },
     onError: (error) => {
       handleError(error)

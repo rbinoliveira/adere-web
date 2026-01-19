@@ -13,12 +13,17 @@ export function ListPrescriptionsPage() {
   const { user } = useAuth()
   const { itemsPerPage, search, currentPage } = useTable()
 
-  const { data, isError, isLoading } = ListPrescriptionsService({
-    ownerId: user?.id ?? '',
-    page: currentPage,
-    itemsPerPage,
-    search,
-  })
+  const { data, isError, isLoading } = ListPrescriptionsService(
+    {
+      ownerId: user?.id ?? '',
+      page: currentPage,
+      itemsPerPage,
+      search,
+    },
+    {
+      enabled: !!user?.id,
+    },
+  )
 
   return (
     <div className="flex flex-col gap-6">

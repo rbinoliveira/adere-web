@@ -7,5 +7,10 @@ type TablePrescriptionDoseProps = {
 export function TablePrescriptionDose({
   prescription,
 }: TablePrescriptionDoseProps) {
-  return <span className="text-sm font-medium">{prescription.phone}</span>
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-sm font-medium">{prescription.medicineName}</span>
+      <span className="text-text-two text-xs">{prescription.dosage}</span>
+    </div>
+  )
 }

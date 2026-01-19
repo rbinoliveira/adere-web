@@ -1,28 +1,32 @@
 import { z } from 'zod'
 
 import { optionalString } from '@/shared/validations/optional-string.validation'
-import { requiredDate } from '@/shared/validations/required-date.validation'
-import { requiredEmail } from '@/shared/validations/required-email.validation'
 import { requiredString } from '@/shared/validations/required-string.validation'
+
+export const prescriptionStatusEnum = z.enum([
+  'active',
+  'finished',
+  'cancelled',
+])
 
 export const savePrescriptionSchema = z.object({
   id: optionalString({ field: 'id' }),
-  name: requiredString({ field: 'nome' }),
-  phone: requiredString({ field: 'telefone' }),
-  dob: z.union([
-    requiredDate({ field: 'data de nascimento' }),
-    requiredString({ field: 'data de nascimento' }),
-  ]),
-  email: requiredEmail(),
-  password: requiredString({ field: 'senha' }),
+  patientId: requiredString({ field: 'paciente' }),
+  patientEmail: requiredString({ field: 'e-mail do paciente' }),
+  patientName: requiredString({ field: 'nome do paciente' }),
+  medicineId: requiredString({ field: 'medicamento' }),
+  medicineName: requiredString({ field: 'nome do medicamento' }),
+  dosage: requiredString({ field: 'posologia' }),
   ownerId: requiredString({ field: 'ownerId' }),
+  status: prescriptionStatusEnum.optional(),
 })
 
 export type SavePrescriptionSchema = z.infer<typeof savePrescriptionSchema>
 
 export const savePrescriptionFormSchema = savePrescriptionSchema.omit({
-  password: true,
+  id: true,
   ownerId: true,
+  status: true,
 })
 
 export type SavePrescriptionFormSchema = z.infer<

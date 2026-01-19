@@ -21,7 +21,7 @@ export function CreatePrescriptionService({ onSuccess }: ServiceModel) {
       queryClient.invalidateQueries({
         predicate: (query) => query.queryKey[0] === listPrescriptionsQueryKey,
       })
-      toast.success('Medicamento criado com sucesso!')
+      toast.success('Prescrição criada com sucesso!')
     },
     onError: (error) => {
       handleError({ err: error })
