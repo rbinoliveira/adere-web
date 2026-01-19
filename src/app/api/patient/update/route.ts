@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 
 import { PatientModel } from '@/features/patient/models/patient.model'
 import { savePatientUseCaseSchema } from '@/features/patient/schemas/save-patient.schema'
+import { getCurrentUserApi } from '@/shared/helpers/get-current-user-api.helper'
 import {
   normalizeName,
   normalizePhone,
@@ -40,6 +41,15 @@ export async function PUT(req: Request) {
     }
 
     const userData = userDoc.data() as PatientModel
+    const currentUser = await getCurrentUserApi()
+
+    if (!currentUser) {
+      return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 })
+    }
+
+    if (userData.ownerId !== currentUser.id && currentUser.role !== 'admin') {
+      return NextResponse.json({ error: 'Não autorizado.' }, { status: 403 })
+    }
 
     const newEmail = data.email?.trim()
     const currentEmail = userData.email?.trim()

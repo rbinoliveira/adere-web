@@ -1,11 +1,14 @@
 'use client'
 
-import { AtSign, Calendar, Check, Phone, User } from 'lucide-react'
+import { AtSign, Calendar, Check, Phone } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { useAuth } from '@/features/auth/hooks/auth.hook'
+import { PatientModel } from '@/features/patient/models/patient.model'
+import { PatientCombobox } from '@/features/prescription/components/patient-combobox'
 import { PrescriptionModel } from '@/features/prescription/models/prescription.model'
 import {
   SavePrescriptionFormSchema,
@@ -18,7 +21,10 @@ import { FormCardFooter } from '@/shared/components/molecules/form/form-card'
 import { InputDate } from '@/shared/components/molecules/form/input-date'
 import { InputMaskedText } from '@/shared/components/molecules/form/input-masked-text'
 import { InputText } from '@/shared/components/molecules/form/input-text'
-import { convertToNumberDate } from '@/shared/helpers/date.helper'
+import {
+  convertToNumberDate,
+  toCalendarDate,
+} from '@/shared/helpers/date.helper'
 import { zodResolver } from '@/shared/libs/zod-resolver'
 
 type SavePrescriptionFormProps = {
@@ -28,10 +34,36 @@ type SavePrescriptionFormProps = {
 export function SavePrescriptionForm({
   prescription,
 }: SavePrescriptionFormProps) {
-  const { control, handleSubmit } = useForm<SavePrescriptionFormSchema>({
-    resolver: zodResolver(savePrescriptionFormSchema),
-    defaultValues: prescription,
-  })
+  const searchParams = useSearchParams()
+  const patientName = searchParams.get('patientName')
+
+  const { control, handleSubmit, setValue } =
+    useForm<SavePrescriptionFormSchema>({
+      resolver: zodResolver(savePrescriptionFormSchema),
+      defaultValues: prescription,
+    })
+
+  useEffect(() => {
+    if (patientName && !prescription) {
+      setValue('name', patientName)
+    }
+  }, [patientName, prescription, setValue])
+
+  function handlePatientSelect(patient: PatientModel | null) {
+    if (patient) {
+      setValue('name', patient.name)
+      setValue('email', patient.email ?? '')
+      setValue('phone', patient.phone)
+      if (patient.dob) {
+        const calendarDate = toCalendarDate(patient.dob)
+        setValue('dob', calendarDate)
+      }
+    } else {
+      setValue('name', '')
+      setValue('email', '')
+      setValue('phone', '')
+    }
+  }
 
   const { push } = useRouter()
 
@@ -65,12 +97,10 @@ export function SavePrescriptionForm({
 
   return (
     <form className="mt-8 flex flex-col gap-6">
-      <InputText
-        placeholder="Ex: Maria da Silva Santos"
-        label="Nome Completo"
+      <PatientCombobox
         control={control}
-        name="name"
-        iconBefore={<User />}
+        onPatientSelect={handlePatientSelect}
+        initialPatientName={patientName ?? undefined}
       />
       <InputText
         placeholder="Ex: maria.silva.santos@gmail.com"

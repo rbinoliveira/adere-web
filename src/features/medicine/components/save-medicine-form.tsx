@@ -6,7 +6,6 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 
-import { useAuth } from '@/features/auth/hooks/auth.hook'
 import {
   AdministrationRoute,
   administrationRouteLabels,
@@ -17,7 +16,7 @@ import {
 } from '@/features/medicine/models/medicine.model'
 import {
   SaveMedicineFormSchema,
-  saveMedicineFormSchema,
+  saveMedicineFormSchemaWithValidation,
 } from '@/features/medicine/schemas/save-medicine.schema'
 import { CreateMedicineService } from '@/features/medicine/service/create-medicine.service'
 import { UpdateMedicineService } from '@/features/medicine/service/update-medicine.service'
@@ -43,7 +42,7 @@ const administrationRouteOptions = Object.entries(
 export function SaveMedicineForm({ medicine }: SaveMedicineFormProps) {
   const { control, handleSubmit, setValue, getValues } =
     useForm<SaveMedicineFormSchema>({
-      resolver: zodResolver(saveMedicineFormSchema),
+      resolver: zodResolver(saveMedicineFormSchemaWithValidation),
       defaultValues: medicine
         ? {
             id: medicine.id,
@@ -68,7 +67,6 @@ export function SaveMedicineForm({ medicine }: SaveMedicineFormProps) {
   const pathname = usePathname()
   const isEditPage = pathname.includes('editar')
 
-  const { user } = useAuth()
   const { mutate: createMedicine, isPending: isPendingCreateMedicine } =
     CreateMedicineService({
       onSuccess: () => push(appRoutes.medicines),
@@ -123,7 +121,6 @@ export function SaveMedicineForm({ medicine }: SaveMedicineFormProps) {
   async function onSubmit(data: SaveMedicineFormSchema) {
     const formattedData = {
       ...data,
-      ownerId: user?.id ?? '',
     }
     if (isEditPage && medicine?.id) {
       updateMedicine({ ...formattedData, id: medicine.id })
@@ -135,7 +132,7 @@ export function SaveMedicineForm({ medicine }: SaveMedicineFormProps) {
   function handleWhilePainChange(checked: boolean) {
     setValue('whilePain', checked)
     if (checked) {
-      setValue('durationDays', undefined)
+      setValue('durationDays', undefined, { shouldValidate: true })
     }
   }
 
@@ -210,10 +207,12 @@ export function SaveMedicineForm({ medicine }: SaveMedicineFormProps) {
               control={control}
               type="number"
               disabled={whilePain}
-              {...field}
+              value={whilePain ? '' : (field.value ?? '')}
               onChange={(e) => {
-                handleDurationDaysChange(e.target.value)
-                field.onChange(e)
+                if (!whilePain) {
+                  handleDurationDaysChange(e.target.value)
+                  field.onChange(e)
+                }
               }}
             />
           )}

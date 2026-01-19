@@ -169,6 +169,7 @@ function InputMaskedText<T extends FieldValues>({
           <PrimitiveInputMaskedText
             {...field}
             {...props}
+            value={field.value ?? ''}
             isErrored={!!error}
             id={name}
           />

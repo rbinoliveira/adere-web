@@ -54,7 +54,6 @@ export const saveMedicineFormSchemaWithValidation = baseMedicineSchema.refine(
 )
 
 export const saveMedicineUseCaseSchema = baseMedicineSchema.extend({
-  ownerId: requiredString({ field: 'ownerId' }),
   nameNormalized: optionalString({ field: 'nameNormalized' }),
 })
 

@@ -27,7 +27,6 @@ export type MedicineModel = {
   durationDays?: number
   whilePain?: boolean
   defaultDosage: string
-  ownerId: string
   createdAt?: Date
   updatedAt?: Date
 }

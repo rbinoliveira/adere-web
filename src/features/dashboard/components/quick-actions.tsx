@@ -11,18 +11,24 @@ export function QuickActions() {
     <div className="shadow-one flex flex-col gap-4 rounded-2xl bg-white p-6">
       <h3 className="text-text-one text-lg font-semibold">Ações Rápidas</h3>
 
-      <Button variant="primary" className="justify-start px-4" asChild>
-        <Link href={appRoutes.prescriptions + '/nova'}>
-          <FileText className="h-5 w-5" />
+      <Button
+        variant="primary"
+        className="justify-start px-4"
+        icon={<FileText className="h-5 w-5" />}
+        asChild
+      >
+        <Link href={appRoutes.prescriptions + '/adicionar'}>
           Nova Prescrição
         </Link>
       </Button>
 
-      <Button variant="secondary" className="justify-start px-4" asChild>
-        <Link href={appRoutes.patients + '/novo'}>
-          <UserPlus className="h-5 w-5" />
-          Novo Paciente
-        </Link>
+      <Button
+        variant="secondary"
+        className="justify-start px-4"
+        icon={<UserPlus className="h-5 w-5" />}
+        asChild
+      >
+        <Link href={appRoutes.patients + '/adicionar'}>Novo Paciente</Link>
       </Button>
 
       <div className="mt-4 flex flex-col gap-2 rounded-xl bg-gray-50 p-4">

@@ -41,13 +41,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary: [
-        'h-[48px] flex justify-center items-center gap-2',
-        'w-full rounded-xl bg-primary shadow-two font-medium',
+        'h-[48px] flex flex-row justify-center items-center gap-2',
+        'rounded-xl bg-primary shadow-two font-medium px-4',
         'text-white disabled:opacity-50 disabled:cursor-not-allowed',
       ],
       secondary: [
-        'bg-white h-[48px] bg-secondary justify-center',
-        'gap-2 flex-row w-full rounded-xl items-center font-medium',
+        'bg-white h-[48px] flex flex-row justify-center items-center gap-2',
+        'rounded-xl bg-secondary font-medium border border-border-one px-4',
         'text-text-seven disabled:opacity-50 disabled:cursor-not-allowed',
       ],
       ghost: ['flex items-center justify-center'],
@@ -70,6 +70,31 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       ],
     }
 
+    if (asChild) {
+      const content = isLoading ? (
+        <LoaderCircle className="h-5 w-5 animate-spin text-white" />
+      ) : icon ? (
+        <span className="flex items-center gap-2">
+          {icon}
+          {children}
+        </span>
+      ) : (
+        children
+      )
+
+      return (
+        <Comp
+          className={cn('cursor-pointer', ...variants[variant], className)}
+          type={type}
+          ref={ref}
+          disabled={disabled || isLoading}
+          {...props}
+        >
+          {content}
+        </Comp>
+      )
+    }
+
     return (
       <Comp
         className={cn('cursor-pointer', ...variants[variant], className)}
@@ -78,14 +103,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || isLoading}
         {...props}
       >
-        <div className="flex items-center justify-center gap-2">
-          {isLoading ? (
-            <LoaderCircle className="h-5 w-5 animate-spin text-white" />
-          ) : (
-            icon
-          )}
-          {children}
-        </div>
+        {isLoading ? (
+          <LoaderCircle className="h-5 w-5 animate-spin text-white" />
+        ) : (
+          <>
+            {icon}
+            {children}
+          </>
+        )}
       </Comp>
     )
   },

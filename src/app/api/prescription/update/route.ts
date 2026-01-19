@@ -41,6 +41,17 @@ export async function PUT(req: Request) {
       )
     }
 
+    const prescriptionData = prescriptionSnap.data()
+    const user = await getCurrentUserApi()
+
+    if (!user) {
+      return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 })
+    }
+
+    if (prescriptionData?.ownerId !== user.id && user.role !== 'admin') {
+      return NextResponse.json({ error: 'Não autorizado.' }, { status: 403 })
+    }
+
     await prescriptionRef.update({
       name: data.name,
       phone: data.phone,

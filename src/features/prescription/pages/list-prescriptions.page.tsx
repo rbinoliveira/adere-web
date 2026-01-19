@@ -1,5 +1,6 @@
 'use client'
 
+import { useAuth } from '@/features/auth/hooks/auth.hook'
 import { TablePrescriptionActions } from '@/features/prescription/components/table-prescription-actions'
 import { TablePrescriptionDose } from '@/features/prescription/components/table-prescription-dose'
 import { TablePrescriptionName } from '@/features/prescription/components/table-prescription-name'
@@ -9,9 +10,11 @@ import { Table } from '@/shared/components/organisms/table/table'
 import { useTable } from '@/shared/hooks/table.hook'
 
 export function ListPrescriptionsPage() {
+  const { user } = useAuth()
   const { itemsPerPage, search, currentPage } = useTable()
 
   const { data, isError, isLoading } = ListPrescriptionsService({
+    ownerId: user?.id ?? '',
     page: currentPage,
     itemsPerPage,
     search,

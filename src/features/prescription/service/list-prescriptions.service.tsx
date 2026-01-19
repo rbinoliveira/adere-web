@@ -14,9 +14,11 @@ export function ListPrescriptionsService(
   const query = useQuery<ListPrescriptionsUseCaseOutput>({
     queryKey: [
       listPrescriptionsQueryKey,
+      params.ownerId,
       params.itemsPerPage,
       params.page,
       params.search,
+      params.patientEmail,
     ],
     queryFn: async () => listPrescriptionsUseCase(params),
   })

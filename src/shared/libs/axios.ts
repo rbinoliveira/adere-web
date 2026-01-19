@@ -3,7 +3,10 @@ import axios from 'axios'
 import { envVars } from '@/shared/config/env/env.mjs'
 
 const api = axios.create({
-  baseURL: envVars.NEXT_PUBLIC_VERCEL_URL,
+  baseURL:
+    typeof window !== 'undefined'
+      ? window.location.origin
+      : envVars.NEXT_PUBLIC_VERCEL_URL,
   headers: {
     'Content-Type': 'application/json',
   },

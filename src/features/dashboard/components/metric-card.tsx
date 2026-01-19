@@ -20,10 +20,15 @@ export function MetricCard({
   return (
     <div
       className={cn(
-        'shadow-one flex flex-col gap-3 rounded-2xl bg-white p-6',
+        'shadow-one flex items-center justify-between rounded-2xl bg-white p-6',
         className,
       )}
     >
+      <div className="flex flex-col gap-1">
+        <span className="text-text-one text-4xl font-bold">{value}</span>
+        <span className="text-text-one text-base font-semibold">{label}</span>
+        <span className="text-text-two text-sm">{description}</span>
+      </div>
       <div
         className={cn(
           'flex h-14 w-14 items-center justify-center rounded-xl',
@@ -31,11 +36,6 @@ export function MetricCard({
         )}
       >
         {icon}
-      </div>
-      <div className="flex flex-col gap-1">
-        <span className="text-text-one text-4xl font-bold">{value}</span>
-        <span className="text-text-one text-base font-semibold">{label}</span>
-        <span className="text-text-two text-sm">{description}</span>
       </div>
     </div>
   )

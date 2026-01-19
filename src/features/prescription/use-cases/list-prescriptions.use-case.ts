@@ -15,26 +15,51 @@ import { db } from '@/shared/libs/firebase'
 import { ListPaginatedModel } from '@/shared/models/list-paginated.model'
 
 export type ListPrescriptionsUseCaseInput = {
+  ownerId: string
   page: number
   itemsPerPage: number
   search?: string
+  patientEmail?: string
 }
 
 export type ListPrescriptionsUseCaseOutput =
   ListPaginatedModel<PrescriptionModel>
 
 export async function listPrescriptionsUseCase({
+  ownerId,
   page,
   itemsPerPage,
   search,
+  patientEmail,
 }: ListPrescriptionsUseCaseInput): Promise<ListPrescriptionsUseCaseOutput> {
+  if (!ownerId || ownerId.trim() === '') {
+    return {
+      items: [],
+      totalItems: 0,
+      totalPages: 0,
+      currentPage: page,
+      itemsPerPage,
+    }
+  }
+
   const prescriptionsRef = collection(db, 'prescriptions')
 
-  const baseQuery = query(
-    prescriptionsRef,
+  let baseQuery
 
-    orderBy('nameNormalized'),
-  )
+  if (patientEmail) {
+    baseQuery = query(
+      prescriptionsRef,
+      where('ownerId', '==', ownerId),
+      where('email', '==', patientEmail),
+      orderBy('createdAt', 'desc'),
+    )
+  } else {
+    baseQuery = query(
+      prescriptionsRef,
+      where('ownerId', '==', ownerId),
+      orderBy('nameNormalized'),
+    )
+  }
 
   if (search && search.trim()) {
     const searchNormalized = removeAccents(search.trim().toLowerCase())
@@ -43,12 +68,19 @@ export async function listPrescriptionsUseCase({
       String.fromCharCode(c.charCodeAt(0) + 1),
     )
 
-    const queryByName = query(
+    const queryConditions: Parameters<typeof query> = [
       prescriptionsRef,
+      where('ownerId', '==', ownerId),
       where('nameNormalized', '>=', searchNormalized),
       where('nameNormalized', '<', endName),
       orderBy('nameNormalized'),
-    )
+    ]
+
+    if (patientEmail) {
+      queryConditions.splice(3, 0, where('email', '==', patientEmail))
+    }
+
+    const queryByName = query(...queryConditions)
 
     const [snapName] = await Promise.all([getDocs(queryByName)])
 
