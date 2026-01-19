@@ -11,7 +11,9 @@ import { UserModel } from '@/features/auth/models/user.model'
 import { LoginSchema } from '@/features/auth/schemas/login.schema'
 import { RecoverPasswordSchema } from '@/features/auth/schemas/recover-password.schema'
 import { RegisterSchema } from '@/features/auth/schemas/register.schema'
+import { appRoutes } from '@/shared/constants/app-routes.constant'
 import { addAuthCookies } from '@/shared/helpers/add-auth-cookies.helper'
+import { deleteAuthCookies } from '@/shared/helpers/delete-auth-cookies.helper'
 import { handleError } from '@/shared/helpers/error.helper'
 import { auth, db, googleProvider } from '@/shared/libs/firebase'
 
@@ -67,6 +69,11 @@ export async function signInWithCredentials(data: LoginSchema) {
 export async function signOut() {
   try {
     await auth.signOut()
+    await deleteAuthCookies()
+    // Força navegação para login após logout
+    if (typeof window !== 'undefined') {
+      window.location.href = appRoutes.signIn
+    }
   } catch (err) {
     handleError({
       err,

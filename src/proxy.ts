@@ -1,12 +1,11 @@
-import { jwtDecode } from 'jwt-decode'
 import { type NextRequest, NextResponse } from 'next/server'
 
-import { PLATFORM_COOKIES } from '@/features/platform/constants/platform-cookies.constants'
 import {
-  platformRoutes,
-  publicRoutes,
-  unloggedRoutes,
-} from '@/features/platform/constants/platform-routes.constants'
+  appPublicRoutes,
+  appRoutes,
+} from '@/shared/constants/app-routes.constant'
+import { appCookies } from '@/shared/constants/app-cookies.constant'
+import { userSchema } from '@/features/auth/schemas/user.schema'
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -15,57 +14,59 @@ export function proxy(request: NextRequest) {
     pathname.startsWith('/_next') ||
     pathname.startsWith('/static') ||
     pathname.match(/\.(jpg|jpeg|png|gif|svg|css|js)$/)
-  const isPublicRoute = publicRoutes.includes(pathname)
 
-  if (isStaticResource || isPublicRoute) {
+  if (isStaticResource) {
     return NextResponse.next()
   }
 
-  const isUnloggedRoute = unloggedRoutes.includes(pathname)
+  const isPublicRoute = appPublicRoutes.includes(pathname)
+  const isCompleteProfileRoute = pathname === appRoutes.completeProfile
+  const userCookie = request.cookies.get(appCookies.USER)?.value
 
-  const refreshToken = request.cookies.get(
-    PLATFORM_COOKIES.REFRESH_TOKEN,
-  )?.value
-  const accessToken = request.cookies.get(PLATFORM_COOKIES.ACCESS_TOKEN)?.value
-  const kioskPage = request.cookies.get(PLATFORM_COOKIES.KIOSK_PAGE)?.value
+  let userIsAuthenticated = false
+  let profileCompleted = false
 
-  let userStatus: string | null = null
-  if (accessToken) {
-    const decodedJwtSub = jwtDecode(accessToken)?.sub
-    if (decodedJwtSub) {
-      const { status } = JSON.parse(decodedJwtSub)
-      if (status) {
-        userStatus = status
+  try {
+    if (userCookie) {
+      const user = JSON.parse(userCookie)
+      userIsAuthenticated = !!user && !!user.id
+      
+      // Verifica se o perfil está completo usando o schema
+      // O schema requer cro e phone para considerar o perfil completo
+      if (userIsAuthenticated) {
+        const parsed = userSchema.safeParse(user)
+        profileCompleted = parsed.success
       }
     }
+  } catch {
+    // Invalid cookie, user is not authenticated
+    userIsAuthenticated = false
+    profileCompleted = false
   }
 
-  const userIsAuthenticated = accessToken && refreshToken
-  const userIsActive = userStatus === 'active'
-
-  if (
-    pathname !== platformRoutes.subscribe &&
-    userIsAuthenticated &&
-    !userIsActive
-  ) {
-    return NextResponse.redirect(new URL(platformRoutes.subscribe, request.url))
+  // Se não estiver autenticado e tentando acessar rotas protegidas, redireciona para login
+  if (!isPublicRoute && !isCompleteProfileRoute && !userIsAuthenticated) {
+    return NextResponse.redirect(new URL(appRoutes.signIn, request.url))
   }
 
-  if (isUnloggedRoute && userIsAuthenticated) {
-    return NextResponse.redirect(new URL(platformRoutes.dashboard, request.url))
+  // Se estiver autenticado mas o perfil não estiver completo
+  if (userIsAuthenticated && !profileCompleted) {
+    // Permite acesso apenas à rota de completar perfil
+    if (pathname !== appRoutes.completeProfile) {
+      return NextResponse.redirect(
+        new URL(appRoutes.completeProfile, request.url),
+      )
+    }
+    // Se já está na rota de completar perfil, permite o acesso
+    return NextResponse.next()
   }
 
-  if (
-    !isUnloggedRoute &&
-    pathname !== platformRoutes.dashboard &&
-    !pathname?.includes(platformRoutes.kiosk) &&
-    kioskPage
-  ) {
-    return NextResponse.redirect(new URL(platformRoutes.kiosk, request.url))
-  }
-
-  if (!isUnloggedRoute && !userIsAuthenticated) {
-    return NextResponse.redirect(new URL(platformRoutes.signIn, request.url))
+  // Se estiver autenticado e o perfil estiver completo
+  if (userIsAuthenticated && profileCompleted) {
+    // Se estiver tentando acessar rotas públicas ou completar perfil, redireciona para dashboard
+    if (isPublicRoute || isCompleteProfileRoute) {
+      return NextResponse.redirect(new URL(appRoutes.dashboard, request.url))
+    }
   }
 
   return NextResponse.next()

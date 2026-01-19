@@ -10,5 +10,9 @@ type AddAuthCookiesProps = {
 export async function addAuthCookies({
   user,
 }: AddAuthCookiesProps): Promise<void> {
-  await setCookie(appCookies.USER, user)
+  // Stringify explicitamente para garantir que o cookie seja acessível no servidor
+  await setCookie(appCookies.USER, JSON.stringify(user), {
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+  })
 }
