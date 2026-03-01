@@ -32,7 +32,9 @@ describe('Recover password page', () => {
     cy.get('button[type="submit"]').click()
 
     // The auth service calls toast.success('E-mail enviado com sucesso') on success
-    cy.contains('E-mail enviado com sucesso', { timeout: 10000 }).should('be.visible')
+    cy.contains('E-mail enviado com sucesso', { timeout: 10000 }).should(
+      'be.visible',
+    )
   })
 
   it('navigates to login page when clicking "Voltar para login"', () => {

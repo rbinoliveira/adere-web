@@ -14,7 +14,9 @@ describe('Login page', () => {
     cy.contains('h1', 'Bem-vindo de volta!').should('be.visible')
     cy.get('input#email').should('be.visible')
     cy.get('input#password').should('be.visible')
-    cy.get('button[type="submit"]').contains('Acessar Sistema').should('be.visible')
+    cy.get('button[type="submit"]')
+      .contains('Acessar Sistema')
+      .should('be.visible')
   })
 
   it('shows validation errors when submitting empty fields', () => {

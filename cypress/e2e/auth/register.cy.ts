@@ -69,7 +69,9 @@ describe('Register page', () => {
     cy.get('button[type="submit"]').click()
 
     // After successful registration the app shows a toast "Conta criada com sucesso"
-    cy.contains('Conta criada com sucesso', { timeout: 10000 }).should('be.visible')
+    cy.contains('Conta criada com sucesso', { timeout: 10000 }).should(
+      'be.visible',
+    )
   })
 
   it('navigates to login page when clicking "Acesse sua conta"', () => {

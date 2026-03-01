@@ -24,7 +24,11 @@ Cypress.Commands.add(
       },
       failOnStatusCode: true,
     }).then((response) => {
-      const { idToken, localId, email: userEmail } = response.body as {
+      const {
+        idToken,
+        localId,
+        email: userEmail,
+      } = response.body as {
         idToken: string
         localId: string
         email: string
