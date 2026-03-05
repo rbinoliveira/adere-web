@@ -396,7 +396,7 @@ function AppSidebarHeader() {
         {isMobile && <SidebarTrigger className="shrink-0" />}
         <div className="flex min-w-0 flex-col">
           <h1 className="text-xl font-semibold leading-tight truncate text-text-one md:text-[28px]">
-            {currentScreen?.title ?? 'Lucy'}
+            {currentScreen?.title ?? 'Adere'}
           </h1>
         </div>
       </div>
@@ -461,7 +461,7 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               backgroundClip: 'text',
             }}
           >
-            Lucy
+            Adere
           </span>
         </Link>
       </SidebarHeader>

@@ -19,7 +19,7 @@ const spaceMono = SpaceMono({
 })
 
 export const metadata: Metadata = {
-  title: 'Lucy',
+  title: 'Adere',
   description: 'Sistema de prescrições para dentistas',
 }
 

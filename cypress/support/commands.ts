@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
 
 // Cookie name matches the pattern: `${NEXT_PUBLIC_APP_NAME}_user`
-// NEXT_PUBLIC_APP_NAME=lucy  →  cookie name = "lucy_user"
-const AUTH_COOKIE_NAME = 'lucy_user'
+// NEXT_PUBLIC_APP_NAME=adere  →  cookie name = "adere_user"
+const AUTH_COOKIE_NAME = 'adere_user'
 
 type LoginByFirebaseOptions = {
   email: string

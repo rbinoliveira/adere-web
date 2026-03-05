@@ -8,7 +8,7 @@ import {
 } from '@/shared/components/organisms/sidebar/sidebar'
 
 export const metadata: Metadata = {
-  title: 'Lucy',
+  title: 'Adere',
 }
 
 export default function DashboardLayout({

@@ -90,7 +90,7 @@ describe('Business rules - access control and route guards', () => {
   })
 
   it('treats malformed auth cookie as unauthenticated and redirects to login', () => {
-    cy.setCookie('lucy_user', '{invalid-json', {
+    cy.setCookie('adere_user', '{invalid-json', {
       sameSite: 'lax',
       secure: false,
     })

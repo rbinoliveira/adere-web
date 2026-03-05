@@ -9,7 +9,7 @@ export function LoginInformations() {
         <div className="h-[68px] w-[58px] rounded-2xl bg-[#3382d2]" />
         <div className="flex flex-col">
           <h1 className="text-[1.875rem] leading-[1.2] font-bold text-white">
-            Lucy
+            Adere
           </h1>
           <p className="text-text-five leading-[1.5]">
             Sistema de Prescrições Médicas
